@@ -1,5 +1,5 @@
 ![](https://img.shields.io/badge/php-7.1-blue.svg)
-![](https://img.shields.io/badge/mysql-5.1-blue.svg)
+![](https://img.shields.io/badge/mysql-only-blue.svg)
 ![](https://img.shields.io/badge/license-Apache%20License%202.0-green.svg)
 ![](https://img.shields.io/badge/pr-welcome-green.svg)
 
