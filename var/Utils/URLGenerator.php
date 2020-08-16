@@ -19,7 +19,7 @@ class URLGenerator
 
     public static function asset($request, $uri, $theme)
     {
-        return $request->getBaseUrl() . '/usr/theme/' . $theme . '/' . $uri;
+        return siteUrl(__THEME_DIR__ . '/' . $theme . '/' . $uri);
     }
 
     public static function route($name, $params = null)

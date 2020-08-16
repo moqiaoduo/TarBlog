@@ -188,7 +188,7 @@ class Request
         } else if (0 === strpos($requestUri, dirname($baseUrl))) {
             // directory portion of $baseUrl matches
             $finalBaseUrl = rtrim(dirname($baseUrl), '/');
-        } else if (!strpos($requestUri, basename($baseUrl))) {
+        } else if (strpos($requestUri, basename($baseUrl)) === false) { // 修复：0和false的区别是0存在，false不存在
             // no match whatsoever; set it blank
             $finalBaseUrl = '';
         } else if ((strlen($requestUri) >= strlen($baseUrl))
