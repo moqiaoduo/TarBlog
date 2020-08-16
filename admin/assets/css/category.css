@@ -1,0 +1,38 @@
+.form-inline .form-label {
+    width: 60px;
+}
+
+.form-description {
+    margin-left: 70px;
+}
+
+.category {
+    display: flex;
+}
+
+.form {
+    width: 300px;
+}
+
+.list {
+    flex: 1;
+    margin-left: 20px;
+}
+@media screen and (max-width: 768px) {
+    .category {
+        flex-direction: column-reverse;
+    }
+
+    .form {
+        width: 100%;
+    }
+
+    .list {
+        flex: 1;
+        margin-left: 0;
+    }
+
+    .form-description {
+        margin-left: 0;
+    }
+}

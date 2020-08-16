@@ -1,0 +1,11 @@
+@media screen and (max-width: 950px) {
+    .container{
+        max-width: 100%;
+        text-align: center;
+    }
+    .menu .category-dropdown{
+        display: none;
+    }
+    article{width: 100%;}
+    aside{display: none;}
+}
