@@ -35,7 +35,11 @@ class URLGenerator
 
         $values = array_values($params);
 
-        return siteUrl(str_replace($keys, $values, $uri));
+        // 假如没有开启地址重写，则加上index.php
+        if (!get_option('rewrite')) $prefix = 'index.php';
+        else $prefix = '';
+
+        return siteUrl($prefix . str_replace($keys, $values, $uri));
     }
 
     public static function getFullUrl($uri, $prefix = null)

@@ -68,6 +68,19 @@ class Setting extends NoRender
                 }
                 break;
             case 'url':
+                $rewrite = $request->post('rewrite', 0);
+                $htaccess = __ROOT_DIR__ . '/.htaccess';
+                if ($rewrite && !file_exists($htaccess)) {
+                    file_put_contents($htaccess, <<<EOF
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L,E=PATH_INFO:$1]
+EOF
+);
+                }
+
                 if (($postUrl = $request->post('postPattern', 'custom')) == 'custom')
                     $postUrl = $request->post('customPattern', '/archives/{cid}');
 
@@ -75,7 +88,7 @@ class Setting extends NoRender
                     'postUrl' => $postUrl,
                     'pageUrl' => $request->post('pagePattern', '/page/{cid}'),
                     'categoryUrl' => $request->post('categoryPattern', '/category/{slug}'),
-                    'rewrite' => $request->post('rewrite', 0)
+                    'rewrite' => $rewrite
                 ];
                 break;
             default:
