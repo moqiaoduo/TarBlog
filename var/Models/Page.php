@@ -11,8 +11,5 @@ use Utils\DB;
 
 class Page extends Content
 {
-    public function author()
-    {
-        return DB::table('users')->where('id', $this->uid)->first();
-    }
+
 }

@@ -87,9 +87,4 @@ class Post extends Content
             ->where('created_at' , '>', $this->created_at)
             ->orderBy('created_at', 'asc')->firstWithModel(static::class);
     }
-
-    public function author()
-    {
-        return DB::table('users')->where('id', $this->uid)->first();
-    }
 }

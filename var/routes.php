@@ -32,3 +32,5 @@ Route::add($post_url . '/comment', 'App\Comment')->name('post.comment');
 Route::add($page_url = $options->pageUrl, 'App\Article\Page')->name('page')->where(['cid' => '{cid}']);
 
 Route::add($page_url . '/comment', 'App\Comment')->name('page.comment');
+
+Route::add('/author/{id}', 'App\Archive\Author')->name('author');

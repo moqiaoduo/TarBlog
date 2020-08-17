@@ -220,4 +220,14 @@ abstract class Article extends Base
     {
         return \route($this->type . '.comment', $this->routeParams);
     }
+
+    public function author()
+    {
+        if ($user = $this->_data->author())
+            $author = $user['name'] ?: $user['username'];
+        else
+            $author = '已删除的用户';
+
+        echo '<a href="' . \route('author', $this->_data->uid) . '">' . $author . '</a>';
+    }
 }

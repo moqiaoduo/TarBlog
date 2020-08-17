@@ -34,6 +34,11 @@ use Utils\DB;
  */
 class Content extends Model
 {
+    public function author()
+    {
+        return DB::table('users')->where('id', $this->uid)->first();
+    }
+
     public function getTopLevelCommentPaginate($page, $pageSize)
     {
         $query = DB::table('comments')->where('cid', $this->cid)->where('parent', 0)

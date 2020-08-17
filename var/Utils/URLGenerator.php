@@ -24,10 +24,16 @@ class URLGenerator
 
     public static function route($name, $params = null)
     {
-        $uri = Route::getRouteByName($name)->getUri();
+        $route = Route::getRouteByName($name);
+
+        $uri = $route->getUri();
 
         if (empty($params))
             return siteUrl($uri);
+
+        if (!is_array($params)) {
+            $params = [$route->getParamsFromPatternUri()[0] => $params];
+        }
 
         $keys = array_map(function ($item) {
             return '{' . $item . '}';

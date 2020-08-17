@@ -3,6 +3,7 @@
     <div class="article">
         <h2 class="post-title"><?php $this->title() ?></h2>
         <ul class="post-meta">
+            <li>作者：<?php $this->author() ?></li>
             <li>发布于: <time datetime="<?php echo $this->timeRaw()?>" itemprop="datePublished"><?php echo $this->time('created_at',1)?></time></li>
             <li>更新于: <time datetime="<?php echo $this->timeRaw('updated_at')?>" itemprop="dateModified"><?php echo $this->time('updated_at',1)?></time></li>
             <li>分类:
