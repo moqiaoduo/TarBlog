@@ -108,7 +108,6 @@ class Options implements \ArrayAccess
 
     /**
      * 输出后台路径
-     * 应用程序里面必须定义admin路由，否则就会菠萝菠萝哒（指报错）
      */
     public function adminUrl()
     {
@@ -117,7 +116,6 @@ class Options implements \ArrayAccess
 
     /**
      * 获取个人档案地址（后台）
-     * 应用程序里面必须定义admin.profile路由，否则就会菠萝菠萝哒（指报错）
      */
     public function profileUrl()
     {
@@ -126,7 +124,6 @@ class Options implements \ArrayAccess
 
     /**
      * 登录URL
-     * 全套Auth::routes()搞起来秋梨膏
      */
     public function loginUrl()
     {
@@ -135,7 +132,6 @@ class Options implements \ArrayAccess
 
     /**
      * 登出URL
-     * 全套Auth::routes()搞起来秋梨膏
      */
     public function logoutUrl()
     {
@@ -144,7 +140,6 @@ class Options implements \ArrayAccess
 
     /**
      * 注册URL
-     * 全套Auth::routes()搞起来秋梨膏
      */
     public function registerUrl()
     {
