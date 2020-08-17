@@ -142,6 +142,7 @@ abstract class Article extends Base
 
     public function _content()
     {
+        $this->plugin->article_content($this->_data); // 处理文章内容，比如加链接
         return $this->_data->content;
     }
 

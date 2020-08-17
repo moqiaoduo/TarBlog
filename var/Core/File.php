@@ -51,6 +51,19 @@ class File
         }
     }
 
+    /**
+     * 强制写入属性
+     *
+     * @param $arr
+     */
+    public function setOptions($arr)
+    {
+        foreach ($arr as $key => $val) {
+            if (property_exists($this, $key))
+                $this->$key = $val;
+        }
+    }
+
     public function isValid()
     {
         if ($this->isUpload) {

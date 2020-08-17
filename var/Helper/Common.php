@@ -7,6 +7,8 @@
 
 namespace Helper;
 
+use Core\Plugin\Manager as PluginManager;
+
 class Common
 {
     private static $title;
@@ -143,6 +145,25 @@ JS
     {
         echo '<link rel="stylesheet" href="assets/css/article.css">' .
             '<link rel="stylesheet" href="assets/plugins/datetimepicker/jquery.datetimepicker.min.css"/>';
+    }
+
+    public static function loadArticleJS()
+    {
+        $plugin = app('plugin'); /* @var PluginManager $plugin */
+
+        $plugin->trigger($plugged)->new_editor_js();
+
+        if (!$plugged) Common::tinyMCEJS();
+
+        ob_start();
+
+        $plugin->upload();
+
+        $upload_code = ob_get_clean();
+
+        Common::addJSFile('assets/plugins/datetimepicker/jquery.datetimepicker.full.min.js', 'assets/js/article.js');
+
+        Common::addJS($upload_code, false);
     }
 
     public static function selectAllJS()

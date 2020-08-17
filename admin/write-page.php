@@ -283,10 +283,6 @@ Common::loadArticleCss();
     </div>
 </form>
 <?php
-$plugin->trigger($plugged)->new_editor_js();
-
-if (!$plugged) Common::tinyMCEJS();
-
-Common::addJSFile('assets/plugins/datetimepicker/jquery.datetimepicker.full.min.js', 'assets/js/article.js');
+Common::loadArticleJS();
 
 include "footer.php";
