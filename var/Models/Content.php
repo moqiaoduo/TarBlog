@@ -35,6 +35,7 @@ class Content extends Model
     public function getTopLevelCommentPaginate($page, $pageSize)
     {
         return DB::table('comments')->where('cid', $this->cid)->where('parent', 0)
+            ->orderBy('created_at', get_option('commentsOrder', 'DESC'))
             ->paginate($page, $pageSize, 'cp');
     }
 }

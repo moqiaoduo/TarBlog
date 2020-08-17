@@ -138,7 +138,8 @@ class Comments extends DataContainer
 
     public function getChildrenByParentId($id)
     {
-        return DB::table('comments')->where('parent', $id)->get();
+        return DB::table('comments')->where('parent', $id)
+            ->orderBy('created_at', get_option('commentsOrder', 'DESC'))->get();
     }
 
     /**
@@ -225,7 +226,7 @@ class Comments extends DataContainer
 
             foreach ($children as $child) {
                 $this->row = $child;
-                $this->children = DB::table('comments')->where('parent', $this->row['id'])->get();
+                $this->children = $this->getChildrenByParentId($this->row['id']);
                 $this->threadedCommentsCallback();
                 $this->row = $tmp;
             }
