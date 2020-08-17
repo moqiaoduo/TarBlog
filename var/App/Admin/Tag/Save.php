@@ -51,7 +51,7 @@ class Save extends NoRender
         $tag->description = $p['description'];
 
         if (!($slug = $p['slug'])) {
-            $result = $this->plugin->trigger($plugged)->generate_slug_category($tag);
+            $result = $this->plugin->trigger($plugged)->generate_slug_tag($tag);
 
             if ($plugged) {
                 $slug = $result[0];
