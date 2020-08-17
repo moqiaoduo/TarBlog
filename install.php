@@ -53,6 +53,8 @@ $db = new Database([
 $db->init();
 $app->bidingInstance('db', $db);
 
+date_default_timezone_set($app->make('options')->get('timezone', 'Asia/Shanghai'));
+
 PHP;
 
 define('__ROOT_DIR__', dirname(__FILE__));
