@@ -21,7 +21,8 @@ class Upgrade extends NoRender
         $core_version = UpgradeList::$newest_version;
 
         if ($this->request->has('download')) {
-            // 下载并更新，这个必须由管理员操作
+            // TODO 下载并更新，这个必须由管理员操作
+            back(with_error('暂不支持在线更新'));
         } elseif ($db_version < $core_version) {
             // 由于某些原因可能无法验证登录，因此我们允许直接更新
             $this->upgrade($db_version, $core_version);
