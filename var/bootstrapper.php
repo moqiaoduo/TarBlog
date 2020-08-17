@@ -92,7 +92,8 @@ $app->addContainerBinding('validate', 'Core\Validate');
  */
 function pageOrDebug($data)
 {
-    ob_clean();
+    ob_end_clean();
+    ob_start();
     http_response_code(500);
     if (__DEBUG__) {
         $trace = $data['trace'];
