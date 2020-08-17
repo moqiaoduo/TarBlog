@@ -44,7 +44,7 @@ $extension = implode(',',unserialize($options->get('allowFileExt','a:0:{}')));
     </div>
     <div class="form-group">
         <div class="form-inline">
-            <label class="form-label">站点地址</label>
+            <label class="form-label">是否允许注册</label>
             <div class="form-inline-radio-group">
                 <input type="radio" name="register" id="register-no" class="form-radio" value="0"
                     <?php if(!$options->register) echo 'checked'?>>
