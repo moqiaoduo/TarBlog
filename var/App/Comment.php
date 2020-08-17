@@ -31,7 +31,7 @@ class Comment extends NoRender
 
         $parent = $request->post('parent', 0);
 
-        if (!DB::table('comments')->where('id', $parent)
+        if ($parent > 0 && !DB::table('comments')->where('id', $parent)
             ->where('status', 'approved')->exists())
             showErrorPage('该评论无法回复，可能的原因：<br>1.该评论未审核通过<br>2.该评论被标记为垃圾<br>3.该评论已被删除');
 
