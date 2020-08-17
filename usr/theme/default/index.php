@@ -9,7 +9,7 @@
  */
 $this->need('header.php') ?>
     <div class="container">
-        <article>
+        <div class="list">
             <?php if ($this->have()):
                 while ($this->next()):?>
                     <div class="item">
@@ -49,8 +49,8 @@ $this->need('header.php') ?>
                 <?php endif;
             endif ?>
             <?php $this->pageNav() ?>
-        </article>
-        <aside>
+        </div>
+        <div class="side">
             <section class="widget">
                 <h3 class="widget-title">功能</h3>
                 <ul class="widget-list">
@@ -64,6 +64,6 @@ $this->need('header.php') ?>
                     <li><a href="https://tarblog.cn" target="_blank">TarBlog</a></li>
                 </ul>
             </section>
-        </aside>
+        </div>
     </div>
 <?php $this->need('footer.php') ?>
