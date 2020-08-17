@@ -269,7 +269,7 @@ class Content
     public static function slug($p, $type, $plugin, $model)
     {
         if (empty($p['slug'])) {
-            $result = $plugin->trigger($plugged)->generate_slug_post($model);
+            $result = $plugin->trigger($plugged)->generate_slug_article($model);
 
             if ($plugged) {
                 $slug = $result[0];
