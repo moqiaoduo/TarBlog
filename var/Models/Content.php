@@ -7,7 +7,9 @@
 
 namespace Models;
 
+use App\Base;
 use Core\Database\Model;
+use Utils\Auth;
 use Utils\DB;
 
 /**
@@ -35,7 +37,14 @@ class Content extends Model
     public function getTopLevelCommentPaginate($page, $pageSize)
     {
         return DB::table('comments')->where('cid', $this->cid)->where('parent', 0)
-            ->orderBy('created_at', get_option('commentsOrder', 'DESC'))
+            ->when(!(Auth::id() && Auth::user()->isAdmin()), function ($query) {
+                $query->where('status', 'approved')->orWhere('status', 'pending')->when(Auth::id(), function ($query) {
+                    $query->where('authorId', Auth::id())->where('ownerId', Auth::id());
+                }, true)->when(!Auth::id(), function ($query) {
+                    $query->where('name', Base::remember('author', true))
+                        ->where('email', Base::remember('mail', true)); // URL不参与判断
+                });
+            }, true)->orderBy('created_at', get_option('commentsOrder', 'DESC'))
             ->paginate($page, $pageSize, 'cp');
     }
 }

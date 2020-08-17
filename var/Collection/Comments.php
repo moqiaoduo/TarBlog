@@ -139,7 +139,14 @@ class Comments extends DataContainer
     public function getChildrenByParentId($id)
     {
         return DB::table('comments')->where('parent', $id)
-            ->orderBy('created_at', get_option('commentsOrder', 'DESC'))->get();
+            ->when(!(Auth::id() && Auth::user()->isAdmin()), function ($query) {
+                $query->where('status', 'approved')->orWhere('status', 'pending')->when(Auth::id(), function ($query) {
+                    $query->where('authorId', Auth::id())->where('ownerId', Auth::id());
+                }, true)->when(!Auth::id(), function ($query) {
+                    $query->where('name', Base::remember('author', true))
+                        ->where('email', Base::remember('mail', true)); // URL不参与判断
+                });
+            }, true)->orderBy('created_at', get_option('commentsOrder', 'DESC'))->get();
     }
 
     /**
