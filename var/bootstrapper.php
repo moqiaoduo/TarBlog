@@ -18,7 +18,7 @@ spl_autoload_register(function ($class) {
         if (!class_exists('\Core\Plugin\Plugin'))
             include_once __ROOT_DIR__ . "/var/Core/Plugin/Plugin.php";
 
-            $dir = substr($class, 0, strlen($class) - 6);
+            $dir = \Utils\Str::toUnderline(substr($class, 0, strlen($class) - 6));
 
             if (file_exists($file = __ROOT_DIR__ . __PLUGIN_DIR__ . DIRECTORY_SEPARATOR . $dir . '/Plugin.php'))
                 include_once $file;
