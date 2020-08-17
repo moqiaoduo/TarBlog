@@ -5,7 +5,7 @@
  * @package 默认主题
  * @author TarBlog
  * @version 0.1
- * @link https://www.tarblog.cn
+ * @link https://tarblog.cn
  */
 $this->need('header.php') ?>
     <div class="container">
