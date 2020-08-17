@@ -63,7 +63,7 @@ define('__DEBUG__', false); // 这个是调试用的，一般人请不要打开
 
 $session = $app->make('session');
 
-if (!__DEBUG__ && !$session->get('install_finish') && file_exists('config.inc.php')) { // 已安装就别来捣乱了
+if (!__DEBUG__ && !$session->get('install_finished') && file_exists('config.inc.php')) { // 已安装就别来捣乱了
     header('Location: index.php');
     exit;
 }
