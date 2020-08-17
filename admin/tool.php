@@ -25,6 +25,7 @@ $tools = $plugin->tool();
 if ($page) {
     foreach ($tools as $tool) {
         if ($tool['p'] === $page) {
+            Common::setTitle('工具');
             Common::setDescription($tool['name']);
             include "header.php";
             Common::loadToolCSS();
