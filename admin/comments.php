@@ -83,7 +83,7 @@ Common::loadErrorAlert($errors->first());
         <div>
             <div class="btn-group">
                 <button class="btn btn-sm icon-btn" type="button" id="comment-remove" title="删除"
-                        onclick="return confirm('确定要删除所选评论吗？') || event.stopImmediatePropagation()">
+                        onclick="return confirm('确定要删除所选评论吗？其所有回复也会一并删除。') || event.stopImmediatePropagation()">
                     <i class="czs-trash"></i>
                 </button>
             </div>

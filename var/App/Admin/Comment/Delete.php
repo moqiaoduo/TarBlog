@@ -9,7 +9,6 @@ namespace App\Admin\Comment;
 
 use App\NoRender;
 use Utils\Auth;
-use Utils\DB;
 
 class Delete extends NoRender
 {
@@ -20,15 +19,41 @@ class Delete extends NoRender
     {
         Auth::check('comment');
 
+        if (empty($ids = $this->request->post('ids'))) back(); // 防止误删整个表
+
         $count = $this->db->table('comments')->when(!Auth::check('post-premium', false),
             function ($query) {
                 $query->where('ownerId', $uid = Auth::id())->orWhere('authorId', $uid);
-            }, true)->whereIn('id', $this->request->post('ids'))->delete(true);
+            }, true)->whereIn('id', $ids)->delete(true);
+
+        $count += $this->findChildrenAndDelete($ids);
 
         $this->request->session()->flash('success', '已成功删除 ' . $count . ' 条评论');
 
         back();
 
         return true;
+    }
+
+    public function findChildrenAndDelete($parent)
+    {
+        static $count;
+
+        $query = $this->db->table('comments');
+
+        if (is_array($parent))
+            $query->whereIn('parent', $parent);
+        else
+            $query->where('parent', $parent);
+
+        foreach ($ids = $query->pluck('id') as $id) {
+            $this->findChildrenAndDelete($id);
+        }
+
+        if (empty($ids)) return $count;
+
+        $count += $this->db->table('comments')->whereIn('id', $ids)->delete(true);
+
+        return $count;
     }
 }
