@@ -51,6 +51,11 @@ abstract class Article extends Base
             $model = PageModel::class;
         }
 
+        // 假如用页面做首页，则手动添加参数，以免无法识别
+        if ($this->route->getName() == 'page.index') {
+            $this->routeParams['cid'] = $this->options->indexPage;
+        }
+
         $data = $this->checkAndGetArticle($type, $model, $this->routeParams, $this->db);
 
         if (is_null($data)) return false;
