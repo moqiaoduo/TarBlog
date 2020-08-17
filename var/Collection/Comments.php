@@ -80,7 +80,10 @@ class Comments extends DataContainer
 
         $this->comments = $this->content->getTopLevelCommentPaginate(1, get_option('commentsPageSize'));
 
-        $this->setQueue($this->comments->getData());
+        if ($this->comments instanceof Paginator)
+            $this->setQueue($this->comments->getData());
+        else
+            $this->setQueue($this->comments);
 
         $this->plugin = app('plugin'); // 因为没有做什么注入处理，只能这样获取了
     }
@@ -93,7 +96,9 @@ class Comments extends DataContainer
      */
     public function pageNav($prev = '&laquo;', $next = '&raquo;')
     {
-        $this->comments->view(['back' => $prev, 'forward' => $next]);
+        // 不是分页器肯定显示不了分页啊
+        if ($this->comments instanceof Paginator)
+            $this->comments->view(['back' => $prev, 'forward' => $next]);
     }
 
     /**

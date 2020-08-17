@@ -36,7 +36,7 @@ class Content extends Model
 {
     public function getTopLevelCommentPaginate($page, $pageSize)
     {
-        return DB::table('comments')->where('cid', $this->cid)->where('parent', 0)
+        $query = DB::table('comments')->where('cid', $this->cid)->where('parent', 0)
             ->when(!(Auth::id() && Auth::user()->isAdmin()), function ($query) {
                 $query->where('status', 'approved')->orWhere('status', 'pending')->when(Auth::id(), function ($query) {
                     $query->where('authorId', Auth::id())->where('ownerId', Auth::id());
@@ -44,7 +44,13 @@ class Content extends Model
                     $query->where('name', Base::remember('author', true))
                         ->where('email', Base::remember('mail', true)); // URL不参与判断
                 });
-            }, true)->orderBy('created_at', get_option('commentsOrder', 'DESC'))
-            ->paginate($page, $pageSize, 'cp');
+            }, true)->orderBy('created_at', get_option('commentsOrder', 'DESC'));
+
+        // 启用分页，才用paginate
+        if (get_option('commentsPageBreak')) {
+            return $query->paginate($page, $pageSize, 'cp');
+        }
+
+        return $query->get();
     }
 }
