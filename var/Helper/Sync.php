@@ -44,7 +44,12 @@ class Sync
 
     public static function comment($cid)
     {
-        DB::table('contents')->where('cid', $cid)
-            ->update(['commentsNum' => DB::table('comments')->where('cid', $cid)->count()]);
+        if (is_array($cid)) {
+            foreach ($cid as $id)
+                self::comment($id);
+        } else {
+            DB::table('contents')->where('cid', $cid)->update(['commentsNum' => DB::table('comments')
+                ->where('status', 'approved')->where('cid', $cid)->count()]);
+        }
     }
 }

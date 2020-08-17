@@ -106,16 +106,16 @@ class Comments extends DataContainer
     {
         //初始化一些变量
         $defaultOptions = array(
-            'before'        =>  '<ol class="comment-list">',
-            'after'         =>  '</ol>',
-            'beforeAuthor'  =>  '',
-            'afterAuthor'   =>  '',
-            'beforeDate'    =>  '',
-            'afterDate'     =>  '',
-            'replyWord'     =>  '回复',
-            'commentStatus' =>  '您的评论正等待审核！',
-            'avatarSize'    =>  32,
-            'defaultAvatar' =>  NULL
+            'before' => '<ol class="comment-list">',
+            'after' => '</ol>',
+            'beforeAuthor' => '',
+            'afterAuthor' => '',
+            'beforeDate' => '',
+            'afterDate' => '',
+            'replyWord' => '回复',
+            'commentStatus' => '您的评论正等待审核！',
+            'avatarSize' => 32,
+            'defaultAvatar' => NULL
         );
 
         $this->options = $options = array_merge($defaultOptions, (array)$singleCommentOptions);
@@ -194,9 +194,9 @@ class Comments extends DataContainer
                         echo $singleCommentOptions['afterDate']; ?>
                     </time>
                 </a>
-                <?php if ($this->status('waiting') && $this->isAuthor()) { ?>
-                    <em class="comment-awaiting-moderation"><?php $singleCommentOptions['commentStatus']; ?></em>
-                <?php } ?>
+                <?php if ($this->status('pending') && $this->isAuthor()) : ?>
+                    <em class="comment-awaiting-moderation"><?php echo $singleCommentOptions['commentStatus']; ?></em>
+                <?php endif ?>
             </div>
             <div class="comment-content" itemprop="commentText">
                 <?php $this->content(); ?>
@@ -324,7 +324,12 @@ onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
      */
     public function author()
     {
-        echo $this->row['name'];
+        if (get_option('commentsShowUrl') && $this->row['url']) {
+            echo '<a href="' . $this->row['url'] . '" target="_blank"' .
+            get_option('commentsUrlNofollow') ? ' rel="nofollow"' : '>' . $this->row['name'] . '</a>';
+        } else {
+            echo $this->row['name'];
+        }
     }
 
     /**
@@ -336,8 +341,8 @@ onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
      */
     public function gravatar($size = 32, $default = NULL)
     {
-        if ($this->options['commentsAvatar']) {
-            $rating = $this->options['commentsAvatarRating'];
+        if (get_option('commentsAvatar')) {
+            $rating = get_option('commentsAvatarRating', 'G');
 
             $this->plugin->trigger($plugged)->avatar($name = $this->row['name'], $email = $this->row['email']);
 
@@ -370,7 +375,7 @@ onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
      */
     public function status($status)
     {
-        return $this->row['status'] === $status;
+        return $this->row['status'] == $status;
     }
 
     /**
@@ -410,7 +415,7 @@ onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
             $this->plugin->trigger($plugged)->reply($word, $this);
 
             if (!$plugged) {
-                echo '<a href="#'. $this->theId .'" rel="nofollow" onclick="return TarBlogComment.reply(\'' .
+                echo '<a href="#' . $this->theId . '" rel="nofollow" onclick="return TarBlogComment.reply(\'' .
                     $this->theId . '\', ' . $this->id . ');">' . $word . '</a>';
             }
         }

@@ -293,6 +293,10 @@ time {
     color: #C00;
 }
 
+.comment-awaiting-moderation {
+    color: #999;
+}
+
 .widget-title {
     display: block;
     font-size: 1.17em;

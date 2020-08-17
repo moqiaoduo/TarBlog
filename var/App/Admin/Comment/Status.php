@@ -28,15 +28,17 @@ class Status extends NoRender
         if (!array_key_exists($status = $this->request->get('status'), $types))
             redirect('comments.php?allComment=' . $allComment);
 
-        $count = $this->db->table('comments')->when(!Auth::user()->isAdmin(), function ($query) {
+        $comment = $this->db->table('comments')->when(!Auth::user()->isAdmin(), function ($query) {
             $query->where('ownerId', $uid = Auth::id())->orWhere('authorId', $uid);
-        }, true)->where('id', $id = $this->request->get('id'))
-            ->update(['status' => $status], true);
+        }, true)->where('id', $id = $this->request->get('id'))->first();
+
+        if (is_null($comment)) showErrorPage('未找到评论', 404);
+
+        $this->db->table('comments')->where('id', $id)->update(['status' => $status]);
 
         $this->request->session()->flash('success', '已将评论标注为' . $types[$status]);
 
-        if ($count > 0)
-            Sync::comment($id);
+        Sync::comment($comment['cid']);
 
         redirect('comments.php?allComment=' . $allComment . '&status=' . $status);
 
