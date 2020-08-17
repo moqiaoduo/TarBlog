@@ -45,7 +45,6 @@ class Setting extends NoRender
                     'commentsPageSize' => $request->post('commentsPageSize'),
                     'commentsPageDisplay' => $request->post('commentsPageDisplay'),
                     'commentsOrder' => $request->post('commentsOrder'),
-                    'commentsPostTimeout' => $request->post('commentsPostTimeout'),
                     'commentsPostInterval' => $request->post('commentsPostInterval'),
                     'commentsShowUrl' => 0,
                     'commentsUrlNofollow' => 0,
