@@ -159,7 +159,7 @@ class Query
     {
         if ($column instanceof Raw) {
             $this->whereRaw($column->getExpression());
-        } elseif (is_null($operator) && is_null($value)) {
+        } elseif (func_num_args() == 1) {
             $this->addQuery('where', [
                 'type' => 'raw',
                 'sql' => '(',
@@ -549,7 +549,7 @@ class Query
     {
         if ($column instanceof Raw) {
             $this->havingRaw($column->getExpression());
-        } elseif (is_null($operator) && is_null($value)) {
+        } elseif (func_num_args() == 1) {
             $this->addQuery('having', [
                 'type' => 'raw',
                 'sql' => '('
