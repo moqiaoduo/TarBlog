@@ -170,11 +170,12 @@ Common::loadArticleCss();
                                         <section class="tarblog-post-option">
                                             <label for="visibility">公开度</label>
                                             <?php Common::buildSelect($types, ['id' => 'visibility', 'name' => 'visibility',
-                                                'class' => 'form-control', 'value' => isset($post) ? $post->status : null]) ?>
+                                                'class' => 'form-control', 'value' => $post_status = (isset($post) ? $post->status : null)]) ?>
                                         </section>
                                         <section class="tarblog-post-option">
                                             <input id="password" name="password" class="form-control input-block"
-                                                   style="display: none;" placeholder="内容密码">
+                                                   <?php if ($post_status != 'password') echo 'style="display: none;"' ?>
+                                                   placeholder="内容密码" value="<?php echo isset($post) ? $post->password : null ?>">
                                         </section>
                                         <section class="tarblog-post-option allow-option">
                                             <label>权限控制</label>
