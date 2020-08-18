@@ -221,6 +221,11 @@ abstract class Article extends Base
         return \route($this->type . '.comment', $this->routeParams);
     }
 
+    public function _id()
+    {
+        return $this->_data->cid;
+    }
+
     public function author()
     {
         if ($user = $this->_data->author())
