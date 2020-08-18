@@ -75,7 +75,7 @@ class Content
         }, true)->where(function ($query) use ($type) {
             if ($type == 'attachment') $query->where('type', $type);
             else $query->where('type', $type)->orWhere('type', $type . '_draft')->where('parent', 0);
-        })->when(!$uid && (!$params['showAll'] ?? false), function ($query) {
+        })->when(!$uid && !($params['showAll'] ?? false), function ($query) {
             $query->where('uid', Auth::id());
         })->when($uid, function ($query) use ($uid) {
             $query->where('uid', $uid);
@@ -218,7 +218,7 @@ class Content
             else $query->where('type', $type)->orWhere('type', $type . '_draft')->where('parent', 0);
         })->when($search = ($params['search'] ?? null), function ($query) use ($search) {
             $query->where('title', 'like', "%$search%")->orWhere('content', 'like', "%$search%");
-        }, true)->when(!$uid && (!$params['showAll'] ?? false), function ($query) {
+        }, true)->when(!$uid && !($params['showAll'] ?? false), function ($query) {
             $query->where('uid', Auth::id());
         })->when($uid, function ($query) use ($uid) {
             $query->where('uid', $uid);
