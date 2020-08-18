@@ -26,14 +26,6 @@ class Content
      */
     private static $draft_ids;
 
-
-    /**
-     * 文章url缓存
-     *
-     * @var array
-     */
-    private static $article_url;
-
     /**
      * 获取内容
      * $params接收参数：
@@ -60,8 +52,8 @@ class Content
                 if (empty($r)) return new Paginator();
                 $content = DB::table('contents')->whereIn('cid', $r);
             } elseif (!empty($params['tag_id'])) {
-                $meta = DB::table('metas')->where('type', 'tag_id')
-                    ->where('mid', $params['category'])->firstWithModel(Tag::class);
+                $meta = DB::table('metas')->where('type', 'tag')
+                    ->where('mid', $params['tag_id'])->firstWithModel(Tag::class);
                 $r = DB::table('relationships')->where('mid', $meta['mid'])->pluck('cid');
                 if (empty($r)) return new Paginator();
                 $content = DB::table('contents')->whereIn('cid', $r);
