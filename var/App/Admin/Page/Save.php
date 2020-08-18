@@ -12,7 +12,6 @@ use Core\Validate;
 use Helper\Content;
 use Models\Page;
 use Utils\Auth;
-use Utils\DB;
 
 class Save extends NoRender
 {
@@ -25,7 +24,7 @@ class Save extends NoRender
 
         $p = $this->request->post();
 
-        $uid = Auth::id();
+        $uid = $this->user->id();
 
         $validate = new Validate($p);
 
@@ -79,7 +78,7 @@ class Save extends NoRender
             $page = new Page(['type' => $p['type']] + $base_data);
         }
 
-        $page->order = $p['order'];
+        $page->order = $p['order'] ?: 0;
         $page->template = $p['template'];
         $page->status = $p['visibility'];
         $page->password = $p['password'];
