@@ -146,7 +146,7 @@ class Comments extends DataContainer
         return DB::table('comments')->where('parent', $id)
             ->when(!(Auth::id() && Auth::user()->isAdmin()), function ($query) {
                 $query->where('status', 'approved')->orWhere('status', 'pending')->when(Auth::id(), function ($query) {
-                    $query->where('authorId', Auth::id())->where('ownerId', Auth::id());
+                    $query->where('authorId', Auth::id())->orWhere('ownerId', Auth::id());
                 }, true)->when(!Auth::id(), function ($query) {
                     $query->where('name', Base::remember('author', true))
                         ->where('email', Base::remember('mail', true)); // URL不参与判断
