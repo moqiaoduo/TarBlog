@@ -264,7 +264,7 @@ JS
         <select<?php if (isset($settings['class'])) echo ' class="' . $settings['class'] . '"' ?>
             <?php if (isset($settings['name'])) echo ' name="' . $settings['name'] . '"' ?>
             <?php if (isset($settings['id'])) echo 'id="' . $settings['id'] . '"' ?>>
-            <?php foreach ($options as $key => $val):dump($key); ?>
+            <?php foreach ($options as $key => $val): ?>
                 <option value="<?php echo $key ?>"
                     <?php if (isset($settings['value']) && $settings['value'] == $key) echo 'selected' ?>>
                     <?php echo $val ?>
