@@ -35,10 +35,10 @@ class Update extends NoRender
         [$result, $field, $message] = (new Validate($this->request->post()))
             ->make([
                 'email|电子邮箱地址' => 'required|email|max:255',
-                'name|用户昵称' => 'max:255',
+                'name|用户昵称' => 'nullable|max:255',
                 'password|用户密码' => 'nullable|confirm|between:6,255',
-                'url|个人主页地址' => 'url|max:255',
-                'identity|用户组' => 'required|in:reader,poster,writer,editor,admin'
+                'url|个人主页地址' => 'nullable|url|max:255',
+                'identity|用户组' => 'nullable|in:reader,poster,writer,editor,admin'
             ]);
 
         if (!$result) {
@@ -57,7 +57,8 @@ class Update extends NoRender
         if (!empty($post['password']))
             $user->password = password_hash($post['password'], PASSWORD_DEFAULT);
         $user->url = $post['url'];
-        $user->identity = $post['identity'];
+        if (!empty($post['identity']))
+            $user->identity = $post['identity'];
 
         DB::saveWithModel('users', $user, 'id', true);
 

@@ -26,9 +26,9 @@ class Create extends NoRender
             ->make([
                 'username|用户名' => 'required|unique:users|max:255',
                 'email|电子邮箱地址' => 'required|email|unique:users|max:255',
-                'name|用户昵称' => 'max:255',
+                'name|用户昵称' => 'nullable|max:255',
                 'password|用户密码' => 'required|confirm|between:6,255',
-                'url|个人主页地址' => 'url|max:255',
+                'url|个人主页地址' => 'nullable|url|max:255',
                 'identity|用户组' => 'required|in:reader,poster,writer,editor,admin'
             ]);
 

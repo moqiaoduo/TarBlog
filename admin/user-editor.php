@@ -98,6 +98,7 @@ Common::loadErrorAlert($errors->first());
                 用户的个人主页地址, 请用 http://(或https://) 开头.
             </div>
         </div>
+        <?php if (Auth::check('admin-level', false)): // 非管理员不能修改 ?>
         <div class="form-group">
             <div class="form-inline">
                 <label class="form-label" for="identity">用户组</label>
@@ -106,6 +107,7 @@ Common::loadErrorAlert($errors->first());
                     'value' => app('session')->get('inputs')['identity'] ?? $user['identity']]) ?>
             </div>
         </div>
+        <?php endif ?>
         <div class="form-group">
             <button type="submit" class="btn btn-primary">保存</button>
             <button type="reset" class="btn">重置</button>
