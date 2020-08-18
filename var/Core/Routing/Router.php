@@ -130,6 +130,8 @@ class Router
                 /* @var Base $app */
                 $success = $app->execute();
                 if ($success) {
+                    if (file_exists($functions_php = $themeDir . '/functions.php'))
+                        include_once $functions_php;
                     $app->render();
                     break;
                 }
