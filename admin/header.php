@@ -40,9 +40,6 @@ if (!Auth::hasLogin()) redirect(__ADMIN_DIR__ . 'login.php');
                 </a>
                 <div class="expand-nav">
                     <ul class="nav">
-                        <?php if (Auth::check('admin-level', false)): ?>
-                        <li class="nav-item"><a href="javascript:;">系统设置</a></li>
-                        <?php endif ?>
                         <li class="nav-item"><a href="./user-editor.php">修改信息</a></li>
                         <li class="nav-item"><a href="./logout.php">登出</a></li>
                     </ul>
