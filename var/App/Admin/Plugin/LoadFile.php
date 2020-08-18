@@ -71,7 +71,7 @@ class LoadFile extends NoRender
                 $mode = '';
         }
 
-        json(['content' => $content, 'title' => $info['package'] . ': ' . $name, 'mode' => $mode]);
+        json(['content' => $content, 'title' => ($info['display'] ?? $info['package']) . ': ' . $name, 'mode' => $mode]);
 
         return true;
     }
