@@ -46,6 +46,27 @@ class Auth
     {
         $this->request = $request;
         $this->session = $this->request->session();
+
+        // 启动时就开始判断是否登录，以免影响cookie操作
+        $user = $this->session->get('tarblog_user');
+
+        if (!is_null($user)) {
+            $user = DB::table('users')->where('auth_token', $user)->firstWithModel(User::class);
+            if (is_null($user)) return null;
+            $this->user = $user;
+            return;
+        }
+
+        $user = Cookie::get('tarblog_user');
+
+        if (!is_null($user)) {
+            $user = DB::table('users')->where('auth_token', $user)->firstWithModel(User::class);
+            if (is_null($user)) return null;
+            $this->session->set('tarblog_user', $user->auth_token);
+            Cookie::set('tarblog_user', $user->auth_token, time() + 7 * 24 * 3600); // 续7天
+            $this->user = $user;
+            return;
+        }
     }
 
     /**
@@ -65,31 +86,7 @@ class Auth
      */
     public function user()
     {
-        if ($this->user) {
-            return $this->user;
-        }
-
-        $user = $this->session->get('tarblog_user');
-
-        if (!is_null($user)) {
-            $user = DB::table('users')->where('auth_token', $user)->firstWithModel(User::class);
-            if (is_null($user)) return null;
-            $this->user = $user;
-            return $user;
-        }
-
-        $user = Cookie::get('tarblog_user');
-
-        if (!is_null($user)) {
-            $user = DB::table('users')->where('auth_token', $user)->firstWithModel(User::class);
-            if (is_null($user)) return null;
-            $this->session->set('tarblog_user', $user->remember_token);
-            Cookie::set('tarblog_user', $user->remember_token, time() + 7 * 24 * 3600); // 续7天
-            $this->user = $user;
-            return $user;
-        }
-
-        return null;
+        return $this->user;
     }
 
     /**
