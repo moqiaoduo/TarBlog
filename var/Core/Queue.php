@@ -68,4 +68,9 @@ trait Queue
     {
         $this->queue = $queue;
     }
+
+    public function getRow()
+    {
+        return $this->row;
+    }
 }
