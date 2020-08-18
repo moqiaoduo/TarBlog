@@ -97,12 +97,14 @@ Common::loadErrorAlert($errors->first());
             </select>
         </div>
         <div>
+            <?php if (Auth::check('post-premium', false)): ?>
             <div class="btn-group">
                 <a href="?<?php echo URLGenerator::array2query(['allComment' => 'on', 's' => $search, 'status' => $status]); ?>"
                    class="btn btn-sm<?php if ($allComment == 'on') echo ' active' ?>">所有</a>
                 <a href="?<?php echo URLGenerator::array2query(['allComment' => 'off', 's' => $search, 'status' => $status]); ?>"
                    class="btn btn-sm<?php if ($allComment == 'off') echo ' active' ?>">我的</a>
             </div>
+            <?php endif ?>
             <div class="search">
                 <input type="text" name="s" placeholder="搜索评论" value="<?php echo $search ?>">
                 <button type="submit">

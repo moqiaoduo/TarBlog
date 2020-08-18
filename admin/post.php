@@ -89,6 +89,7 @@ Common::loadErrorAlert($errors->first());
                 </select>
             </div>
             <div>
+                <?php if (Auth::check('post-premium', false)): ?>
                 <div class="btn-group">
                     <a href="?<?php echo URLGenerator::array2query(compact('category_id', 'post_status',
                             'tag_id') + ['allPost' => 'on', 's' => $search]); ?>"
@@ -97,6 +98,7 @@ Common::loadErrorAlert($errors->first());
                             'tag_id') + ['allPost' => 'off', 's' => $search]); ?>"
                        class="btn btn-sm<?php if ($allPost == 'off') echo ' active' ?>">我的</a>
                 </div>
+                <?php endif ?>
                 <div class="search">
                     <input type="text" name="s" placeholder="搜索文章" value="<?php echo $search ?>">
                     <button type="submit">
