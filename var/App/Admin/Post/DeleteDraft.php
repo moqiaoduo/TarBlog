@@ -10,7 +10,6 @@ namespace App\Admin\Post;
 use App\NoRender;
 use Helper\Content;
 use Utils\Auth;
-use Utils\DB;
 
 class DeleteDraft extends NoRender
 {
@@ -22,7 +21,7 @@ class DeleteDraft extends NoRender
 
         $draft = Content::getPostDraft($id);
 
-        if ($draft['uid'] != Auth::id())
+        if ($draft['uid'] != $this->user->id())
             back(function () {
                 with_error(['您没有权限删除这份草稿!']);
             });

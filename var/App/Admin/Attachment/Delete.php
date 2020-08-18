@@ -10,7 +10,6 @@ namespace App\Admin\Attachment;
 use App\NoRender;
 use Helper\Content;
 use Utils\Auth;
-use Utils\DB;
 
 class Delete extends NoRender
 {
@@ -48,7 +47,7 @@ class Delete extends NoRender
             return '删除失败';
         }
 
-        if (!$this->user->isAdmin() && $data['uid'] != Auth::id()) {
+        if (!$this->user->isAdmin() && $data['uid'] != $this->user->id()) {
             return '你没有权限删除这个文件!';
         }
 

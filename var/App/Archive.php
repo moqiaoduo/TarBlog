@@ -66,8 +66,12 @@ abstract class Archive extends Base
 
     public function _preview()
     {
-        $params = func_get_args();
+        if ($this->row['status'] == 'password') {
+            return '此文章已加密，无法预览';
+        } else {
+            $params = func_get_args();
 
-        return Str::limit($this->row['content'], ...$params);
+            return Str::limit($this->row['content'], ...$params);
+        }
     }
 }

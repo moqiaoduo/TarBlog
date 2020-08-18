@@ -32,8 +32,8 @@ class Author extends Archive
 
         $this->paginator = $this->db->table('contents')->whereNull('deleted_at')
             ->where('type', 'post')->where('uid', $this->_user->id)
-            ->orderByDesc('created_at')->paginate($this->request->get('page', 1),
-                $this->options->get('pageSize', 10));
+            ->whereIn('status', ['publish', 'password'])->orderByDesc('created_at')
+            ->paginate($this->request->get('page', 1), $this->options->get('pageSize', 10));
 
         $this->queue = $this->paginator->getData();
 

@@ -10,9 +10,11 @@ namespace App;
 use App\Article\Post;
 use Collection\Comments;
 use Core\Database\Manager as Database;
+use Core\Errors;
 use Models\Category;
 use Models\Post as PostModel;
 use Models\Page as PageModel;
+use Utils\Auth;
 use Utils\Route;
 
 abstract class Article extends Base
@@ -59,6 +61,22 @@ abstract class Article extends Base
         $data = $this->checkAndGetArticle($type, $model, $this->routeParams, $this->db);
 
         if (is_null($data)) return false;
+
+        if ($data && (
+            $data->status == 'private' && (
+                !Auth::check('post-premium', false) // 编辑和以上都可以查看
+                || $this->user->id() != $data->uid // 作者本人也可以查看
+            ) || $data->status == 'waiting' // 无论如何，待审核谁都看不了，要看去看后台
+            )) showErrorPage('您无权查看该页面', 403);
+
+        if ($this->request->isMethod('post')) {
+            // 退出浏览器后，密码失效，需要重新输入
+            if ($this->request->post('password') == $data->password)
+                $this->request->cookie()::set('_tarblog_article_' . $data->cid . '_password_', $data->password);
+            else
+                with_error('密码不正确');
+            back();
+        }
 
         $this->_data = $data;
 
@@ -111,7 +129,6 @@ abstract class Article extends Base
         return $data;
     }
 
-
     public function _title()
     {
         return $this->_data->title;
@@ -127,6 +144,11 @@ abstract class Article extends Base
         return $this->_data[$column];
     }
 
+    /**
+     * 评论数处理
+     *
+     * @return string
+     */
     public function _commentsNum()
     {
         $arg_num = func_num_args();
@@ -145,10 +167,34 @@ abstract class Article extends Base
         return $show;
     }
 
+    /**
+     * 文章内容处理
+     *
+     * @return string
+     */
     public function _content()
     {
-        $this->plugin->article_content($this->_data); // 处理文章内容，比如加链接
-        return $this->_data->content;
+        // 密码不正确的话是不能显示文章内容的，即便是管理员也得输密码（反正知道）
+        if ($this->_data->status == 'password' && $this->request->cookie('_tarblog_article_' . $this->_data->cid .
+                '_password_') != $this->_data->password) {
+            $error = new Errors($this->request->session('errors'));
+            $err = $error->first();
+            if (function_exists('article_password_form')) {
+                return article_password_form($err);
+            } else {
+                return <<<HTML
+<p><b>$err</b></p>
+<p>该页面内容已被加密，请输入访问密码：</p>
+<form method="post">
+<input type="password" name="password">
+<button type="submit">提交</button>
+</form>
+HTML;
+            }
+        } else {
+            $this->plugin->article_content($this->_data); // 处理文章内容，比如加链接
+            return $this->_data->content;
+        }
     }
 
     private function getPrevPost()

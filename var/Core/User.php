@@ -26,23 +26,46 @@ class User
         $this->user = $auth->user();
     }
 
+    /**
+     * 获取用户id
+     *
+     * @return int|null
+     */
     public function id()
     {
-        return $this->user->id;
+        return $this->hasLogin() ? $this->user->id : null;
     }
 
+    /**
+     * 获取用户邮箱
+     *
+     * @return string|null
+     */
     public function email()
     {
-        return $this->user->email;
+        return $this->hasLogin() ? $this->user->email : null;
     }
 
+    /**
+     * 判断用户是否为管理员
+     *
+     * @return bool
+     */
     public function isAdmin()
     {
-        return $this->user->isAdmin();
+        return $this->hasLogin() && $this->user->isAdmin();
     }
 
+    /**
+     * 显示在屏幕上的名称
+     *
+     * @param bool $return
+     * @return string|void
+     */
     public function screenName($return = false)
     {
+        if (!$this->hasLogin()) return null;
+
         $screenName = $this->user->name ?? $this->user->username;
 
         if ($return)
@@ -51,6 +74,11 @@ class User
         echo $screenName;
     }
 
+    /**
+     * 是否登录
+     *
+     * @return bool
+     */
     public function hasLogin()
     {
         return $this->auth->hasLogin();

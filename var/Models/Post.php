@@ -77,14 +77,14 @@ class Post extends Content
     public function prev()
     {
         return DB::table('contents')->where('type', 'post')->whereNull('deleted_at')
-            ->where('created_at' , '<', $this->created_at)
+            ->where('created_at' , '<', $this->created_at)->whereIn('status', ['publish', 'password'])
             ->orderBy('created_at', 'desc')->firstWithModel(static::class);
     }
 
     public function next()
     {
         return DB::table('contents')->where('type', 'post')->whereNull('deleted_at')
-            ->where('created_at' , '>', $this->created_at)
+            ->where('created_at' , '>', $this->created_at)->whereIn('status', ['publish', 'password'])
             ->orderBy('created_at', 'asc')->firstWithModel(static::class);
     }
 }

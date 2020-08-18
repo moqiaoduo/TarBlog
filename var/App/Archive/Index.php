@@ -23,7 +23,8 @@ class Index extends Archive
         $this->paginator = $this->db->table('contents')->whereNull('deleted_at')
             ->where('type', 'post')->when($search, function ($query) use ($search) { // 只搜索标题和正文
                 $query->where('title', 'like', "%$search%")->orWhere('content', 'like', "%$search%");
-            }, true)->orderByDesc('created_at')->paginate($this->request->get('page', 1),
+            }, true)->whereIn('status', ['publish', 'password']) // 只有已发布和加密状态的能出现在列表
+            ->orderByDesc('created_at')->paginate($this->request->get('page', 1),
                 $this->options->get('pageSize', 10));
 
         $this->queue = $this->paginator->getData();

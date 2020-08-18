@@ -22,7 +22,8 @@ class Meta extends Model
         if (empty($pageSize)) $pageSize = get_option('pageSize', 10);
 
         return DB::table('contents')->where('type','post')->whereNull('deleted_at')
-            ->whereIn('cid', $r)->orderByDesc('created_at')->paginate($page, $pageSize);
+            ->whereIn('status', ['publish', 'password'])->whereIn('cid', $r)
+            ->orderByDesc('created_at')->paginate($page, $pageSize);
     }
 
     public function getPostBySlug($slug, $model = null)

@@ -94,7 +94,7 @@ class Upload extends NoRender
             'path' => str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePath())];
 
         $this->db->table('contents')->insert(['type' => 'attachment', 'title' => $file->getOriginName(),
-                'uid' => Auth::id(), 'slug' => generate_unique_slug($slug, 'attachment'),
+                'uid' => $this->user->id(), 'slug' => generate_unique_slug($slug, 'attachment'),
                 'content' => serialize($data)] + auto_fill_time());
 
         $id = $this->db->lastInsertId();
