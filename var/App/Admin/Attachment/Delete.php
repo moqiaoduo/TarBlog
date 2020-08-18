@@ -22,7 +22,9 @@ class Delete extends NoRender
         Auth::check('post-base');
 
         if ($this->request->post('batch')) {
-            foreach ($this->request->post('ids') as $id) {
+            if (empty($ids = $this->request->post('ids'))) back();
+
+            foreach ($ids as $id) {
                 $result = $this->deleteById($id);
                 if ($result != 'ok')
                     with_error($result);
