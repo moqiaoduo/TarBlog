@@ -197,7 +197,9 @@ Common::loadArticleCss();
                                 <p class="description">
                                     ---<br>
                                     本文由
-                                    <a href="post.php?uid=<?php echo @$author['id'] ?>"><?php echo @$author['name'] ?></a>
+                                    <a href="post.php<?php echo $author['id'] == Auth::id() ? '' : '?uid=' . $author['id'] ?>">
+                                        <?php echo $author['name'] ?>
+                                    </a>
                                     撰写<br>
                                     最后更新于 <?php echo $updated_at ?>
                                 </p>

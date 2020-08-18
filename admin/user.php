@@ -108,7 +108,7 @@ Common::loadErrorAlert($errors->first());
                             }
                             ?></td>
                         <td>
-                            <a href="post.php?allPost=on&uid=<?php echo $val['id'] ?>">
+                            <a href="post.php<?php echo $val['id'] == Auth::id() ? '' : '?allPost=on&uid=' . $val['id'] ?>">
                                 <?php echo (new \Models\User($val))->postCount()?>
                             </a>
                         </td>

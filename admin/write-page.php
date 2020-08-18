@@ -177,8 +177,8 @@ Common::loadArticleCss();
                         <section class="tarblog-post-option">
                             <p class="description">
                                 ---<br>
-                                本文由
-                                <a href="post.php?uid=<?php echo @$author['id'] ?>"><?php echo @$author['name'] ?></a>
+                                本页面由
+                                <a href="user-editor.php?id=<?php echo $author['id'] ?>"><?php echo $author['name'] ?></a>
                                 撰写<br>
                                 最后更新于 <?php echo $updated_at ?>
                             </p>
