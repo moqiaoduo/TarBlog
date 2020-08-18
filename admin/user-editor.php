@@ -28,6 +28,7 @@ if (is_null($user)) showErrorPage('用户不存在', 404);
 include "header.php";
 Common::loadAdminSettingStyle(100);
 User::loadCSS();
+Common::loadSuccessAlert($session->get('success'));
 Common::loadErrorAlert($errors->first());
 ?>
     <form method="post" class="form-container" action="do.php?a=Admin/User/Update">
