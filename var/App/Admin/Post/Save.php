@@ -13,7 +13,6 @@ use Helper\Content;
 use Helper\Sync;
 use Models\Post;
 use Utils\Auth;
-use Utils\DB;
 
 class Save extends NoRender
 {
@@ -26,7 +25,7 @@ class Save extends NoRender
 
         $p = $this->request->post();
 
-        $uid = Auth::id();
+        $uid = $this->user->id();
 
         $validate = new Validate($p);
 
@@ -55,7 +54,7 @@ class Save extends NoRender
 
             if (is_null($post)) showErrorPage('未找到文章');
 
-            if ($post->uid !== Auth::id() && !Auth::check('post-premium', false))
+            if ($post->uid !== $this->user->id() && !Auth::check('post-premium', false))
                 showErrorPage('您没有权限编辑这篇文章', 403);
 
             if ($p['type'] == 'post_draft' && $post->type == 'post') {
@@ -83,14 +82,15 @@ class Save extends NoRender
             $post = new Post(['type' => $p['type']] + $base_data);
         }
 
+        // 权限不足的清空下，这些设置都是不可见的，也就是说都按默认来，或者更高权限的人设置的值
         if (Auth::check('post-base-manager', false)) {
             $post->status = $p['visibility'];
             $post->password = $p['password'];
             $post->allowComment = (int)$this->request->has('allowComment');
         }
 
-        if ($this->options->get('write_pending', 1) && $p['type'] == 'post' &&
-            !Auth::check('post-base-manager', false))
+        // 甭管啥，只要你权限不够，新建修改都得审核
+        if (!Auth::check('post-base-manager', false))
             $post->status = 'waiting';
 
         if ($cid == 0) Content::saveContent($post);
