@@ -80,9 +80,13 @@ Common::loadErrorAlert($errors->first());
                     </td>
                     <td>
                         <?php
-                        $post = Content::getPostById($val['parent']);
-                        if (is_null($post)) echo '无';
-                        else echo '<a href="write-post.php?edit=' . $post->cid . '">' . $post->title . '</a>';
+                        if (empty($val['parent'])) {
+                            echo '无';
+                        } else {
+                            $post = Content::getPostById($val['parent']);
+                            if (is_null($post)) echo '已删除的文章';
+                            else echo '<a href="write-post.php?edit=' . $post->cid . '">' . $post->title . '</a>';
+                        }
                         ?>
                     </td>
                     <td>

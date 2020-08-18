@@ -8,6 +8,8 @@
 namespace App\Admin\Attachment;
 
 use App\NoRender;
+use Helper\Content;
+use Utils\Auth;
 use Utils\DB;
 
 class Clean extends NoRender
