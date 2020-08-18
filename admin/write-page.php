@@ -58,10 +58,11 @@ if ($cid) {
 }
 
 $types = ['publish' => '公开', 'hidden' => '隐藏', 'password' => '密码保护', 'private' => '私密'];
-$theme_dir = __ROOT_DIR__ . __THEME_DIR__ . '/' . $options->get('theme', 'default') . '/';
 $templates = [];
-foreach (glob($theme_dir . 'page-*.php') as $file) {
-    $info = PHPComment::parseFromFile($theme_dir . $file);
+foreach (glob(__ROOT_DIR__ . __THEME_DIR__ . '/' . $options->get('theme', 'default') .
+    '/' . 'page-*.php') as $file) {
+    $info = PHPComment::parseFromFile($file);
+    $file = basename($file);
     $key = substr($file, 5, strlen($file) - 9);
     if (isset($info['template'])) $name = $info['template'];
     else $name = $key;
