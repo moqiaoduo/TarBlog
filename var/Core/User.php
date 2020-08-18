@@ -26,6 +26,11 @@ class User
         $this->user = $auth->user();
     }
 
+    public function id()
+    {
+        return $this->user->id;
+    }
+
     public function email()
     {
         return $this->user->email;
