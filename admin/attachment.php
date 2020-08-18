@@ -83,9 +83,11 @@ Common::loadErrorAlert($errors->first());
                         if (empty($val['parent'])) {
                             echo '无';
                         } else {
-                            $post = Content::getPostById($val['parent']);
+                            $post = \Utils\DB::table('contents')->whereNull('deleted_at')
+                                ->where('cid', $val['parent'])->firstWithModel(\Models\Content::class);
                             if (is_null($post)) echo '已删除的文章';
-                            else echo '<a href="write-post.php?edit=' . $post->cid . '">' . $post->title . '</a>';
+                            else echo '<a href="write-' . $post->type . '.php?edit=' .
+                                $post->cid . '">' . $post->title . '</a>';
                         }
                         ?>
                     </td>
