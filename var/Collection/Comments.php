@@ -331,7 +331,7 @@ onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
     {
         if (get_option('commentsShowUrl') && $this->row['url']) {
             echo '<a href="' . $this->row['url'] . '" target="_blank"' .
-            get_option('commentsUrlNofollow') ? ' rel="nofollow"' : '>' . $this->row['name'] . '</a>';
+                (get_option('commentsUrlNofollow') ? ' rel="nofollow"' : '') . '>' . $this->row['name'] . '</a>';
         } else {
             echo $this->row['name'];
         }
