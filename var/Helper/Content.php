@@ -75,15 +75,17 @@ class Content
 
         $type = $params['type'];
 
+        $uid = $params['uid'] ?? null;
+
         return $content->when($search, function ($query) use ($type, $search) {
             $query->where('title', 'like', "%$search%");
             if ($type != 'attachment') $query->orWhere('content', 'like', "%$search%");
         }, true)->where(function ($query) use ($type) {
             if ($type == 'attachment') $query->where('type', $type);
             else $query->where('type', $type)->orWhere('type', $type . '_draft')->where('parent', 0);
-        })->when(!$params['showAll'] ?? false, function ($query) {
+        })->when(!$uid && (!$params['showAll'] ?? false), function ($query) {
             $query->where('uid', Auth::id());
-        })->when($uid = ($params['uid'] ?? null), function ($query) use ($uid) {
+        })->when($uid, function ($query) use ($uid) {
             $query->where('uid', $uid);
         })->orderByDesc('created_at')->paginate($params['page']);
     }
@@ -216,15 +218,17 @@ class Content
                 })->whereNull('deleted_at');
         }
 
+        $uid = $params['uid'] ?? null;
+
         $count = $content->where(function ($query) use ($params) {
             $type = $params['type'];
             if ($type == 'attachment') $query->where('type', $type);
             else $query->where('type', $type)->orWhere('type', $type . '_draft')->where('parent', 0);
         })->when($search = ($params['search'] ?? null), function ($query) use ($search) {
             $query->where('title', 'like', "%$search%")->orWhere('content', 'like', "%$search%");
-        }, true)->when(!$params['showAll'] ?? false, function ($query) {
+        }, true)->when(!$uid && (!$params['showAll'] ?? false), function ($query) {
             $query->where('uid', Auth::id());
-        })->when($uid = ($params['uid'] ?? null), function ($query) use ($uid) {
+        })->when($uid, function ($query) use ($uid) {
             $query->where('uid', $uid);
         })->count();
 
