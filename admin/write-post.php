@@ -169,13 +169,8 @@ Common::loadArticleCss();
                                     <div class="collapse-content">
                                         <section class="tarblog-post-option">
                                             <label for="visibility">公开度</label>
-                                            <select id="visibility" name="visibility" class="form-control">
-                                                <?php foreach ($types as $key => $type): ?>
-                                                    <option value=<?php echo '"' . $key . '"';
-                                                    if (isset($post) && $key == $post->status) echo "selected" ?>
-                                                    ><?php echo $type ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
+                                            <?php Common::buildSelect($types, ['id' => 'visibility', 'name' => 'visibility',
+                                                'class' => 'form-control', 'value' => isset($post) ? $post->status : null]) ?>
                                         </section>
                                         <section class="tarblog-post-option">
                                             <input id="password" name="password" class="form-control input-block"

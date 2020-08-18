@@ -57,7 +57,6 @@ if ($cid) {
     }
 }
 
-
 $types = ['publish' => '公开', 'hidden' => '隐藏', 'password' => '密码保护', 'private' => '私密'];
 $theme_dir = __ROOT_DIR__ . __THEME_DIR__ . '/' . $options->get('theme', 'default') . '/';
 $templates = [];
@@ -152,13 +151,8 @@ Common::loadArticleCss();
                             <div class="collapse-content">
                                 <section class="tarblog-post-option">
                                     <label for="visibility">公开度</label>
-                                    <select id="visibility" name="visibility" class="form-control">
-                                        <?php foreach ($types as $key => $type): ?>
-                                            <option value=<?php echo '"' . $key . '"';
-                                            if (isset($post) && $key == $post->status) echo "selected" ?>
-                                            ><?php echo $type ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                    <?php Common::buildSelect($types, ['id' => 'visibility', 'name' => 'visibility',
+                                        'class' => 'form-control', 'value' => isset($page) ? $page->status : null]) ?>
                                 </section>
                                 <section class="tarblog-post-option">
                                     <input id="password" name="password" class="form-control input-block"
@@ -170,7 +164,7 @@ Common::loadArticleCss();
                                         <li>
                                             <input type="checkbox" name="allowComment" id="allow-comment"
                                                    class="form-checkbox"
-                                                <?php if (!isset($post) || $post->allowComment) echo "checked" ?>>
+                                                <?php if (!isset($page) || $page->allowComment) echo "checked" ?>>
                                             <label for="allow-comment">允许评论</label>
                                         </li>
                                     </ul>
