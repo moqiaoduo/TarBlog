@@ -28,7 +28,7 @@ $page=new \Collection\Pages();
                                     style="height: 26px;vertical-align: baseline;padding: 0 5px;">
                                 <?php while ($page->next()):?>
                                     <option value="<?php $page->id()?>"
-                                        <?php if($options->indexPage==$page->id(true)) echo " selected"?>>
+                                        <?php if($options->indexPage==$page->id) echo " selected"?>>
                                         <?php $page->title()?>
                                     </option>
                                 <?php endwhile;?>

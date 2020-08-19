@@ -8,11 +8,14 @@
 namespace Collection;
 
 use Core\DataContainer;
+use Core\Dynamic;
 use Utils\DB;
 use Utils\Route;
 
 class Pages extends DataContainer
 {
+    use Dynamic;
+
     public function __construct()
     {
         $this->setQueue(DB::table('contents')->whereIn('status', ['publish', 'password'])
@@ -20,21 +23,18 @@ class Pages extends DataContainer
             ->orderByDesc('created_at')->get());
     }
 
-    public function id($return = false)
+    public function _id()
     {
-        if ($return)
-            return $this->row['cid'];
-
-        echo $this->row['cid'];
+        return $this->row['cid'];
     }
 
-    public function link()
+    public function _link()
     {
-        echo route('page', Route::fillPageParams($this->row));
+        return route('page', Route::fillPageParams($this->row));
     }
 
-    public function title()
+    public function _title()
     {
-        echo $this->row['title'];
+        return $this->row['title'];
     }
 }
