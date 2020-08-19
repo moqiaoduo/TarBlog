@@ -79,7 +79,7 @@ class Save extends NoRender
         }
 
         if ($p['type'] == 'page') // 只有发布的时候才能更改页面顺序
-            $page->order = $p['order'] ?: $this->getNewOrderNum();
+            $page->order = is_numeric($p['order']) ? $p['order'] : $this->getNewOrderNum(); // 非数字自动分配
 
         $page->template = $p['template'];
         $page->status = $p['visibility'];
