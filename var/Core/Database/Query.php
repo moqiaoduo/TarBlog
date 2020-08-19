@@ -959,7 +959,29 @@ class Query
     {
         $this->switchAction('select');
 
-        $this->select(new Raw("sum(`$column`) as sum"));
+        $this->select(new Raw("sum(`$column`) as `sum`"));
+
+        $sql = $this->toSql();
+
+        return $this->manager->query($sql, $this->parsed_parameters, true)['sum'];
+    }
+
+    public function max($column)
+    {
+        $this->switchAction('select');
+
+        $this->select(new Raw("max(`$column`) as `max`"));
+
+        $sql = $this->toSql();
+
+        return $this->manager->query($sql, $this->parsed_parameters, true)['max'];
+    }
+
+    public function min($column)
+    {
+        $this->switchAction('select');
+
+        $this->select(new Raw("min(`$column`) as `sum`"));
 
         $sql = $this->toSql();
 
@@ -975,7 +997,7 @@ class Query
     {
         $this->switchAction('select');
 
-        $this->select(new Raw('count(*) as count'));
+        $this->select(new Raw('count(*) as `count`'));
 
         $sql = $this->toSql();
 
