@@ -169,34 +169,7 @@ Auth::check('admin-level');
 
 Common::setTitle('升级程序');
 
-$data = json_decode(curl_get('https://api.github.com/repos/moqiaoduo/TarBlog/releases/latest'), true);
-
-function curl_get($url){
-    $header = array(
-        'Accept: application/json',
-        'User-Agent: TarBlog-App'
-    );
-    $curl = curl_init();
-    //设置抓取的url
-    curl_setopt($curl, CURLOPT_URL, $url);
-    //设置头文件的信息作为数据流输出
-    curl_setopt($curl, CURLOPT_HEADER, 0);
-    // 超时设置,以秒为单位
-    curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-
-    // 设置请求头
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-    //设置获取的信息以文件流的形式返回，而不是直接输出。
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-    //执行命令
-    $data = curl_exec($curl);
-
-    curl_close($curl);
-
-    return $data;
-}
+$data = json_decode(\Utils\Curl::get('https://api.github.com/repos/moqiaoduo/TarBlog/releases/latest'), true);
 
 if (empty($data) || !empty($data['message']))
     $newest_version = 'Unknown';
