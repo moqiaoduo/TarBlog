@@ -8,6 +8,7 @@
 namespace Core\Routing;
 
 use App\Base;
+use App\NotFound;
 use Core\Container\Manager as App;
 use Core\Http\Request;
 
@@ -139,12 +140,8 @@ class Router
         }
 
         if (!$success) {
-            http_response_code(404); // 设置HttpCode=404
-            // 调用404页面
-            if (file_exists($err_page = $themeDir . DIRECTORY_SEPARATOR . '404.php'))
-                include $err_page;
-            else
-                showErrorPage("页面不存在");
+            $app = new NotFound($this->app, $theme, $themeDir);
+            $app->render();
         }
     }
 
