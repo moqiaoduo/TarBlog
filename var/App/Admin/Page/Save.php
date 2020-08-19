@@ -78,7 +78,9 @@ class Save extends NoRender
             $page = new Page(['type' => $p['type']] + $base_data);
         }
 
-        $page->order = $p['order'] ?: 0;
+        if ($p['type'] == 'page') // 只有发布的时候才能更改页面顺序
+            $page->order = $p['order'] ?: $this->getNewOrderNum();
+
         $page->template = $p['template'];
         $page->status = $p['visibility'];
         $page->password = $p['password'];
@@ -97,5 +99,10 @@ class Save extends NoRender
         });
 
         return true;
+    }
+
+    public function getNewOrderNum()
+    {
+        return $this->db->table('contents')->where('type', 'page')->max('order') + 1;
     }
 }
