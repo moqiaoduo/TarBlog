@@ -161,7 +161,12 @@ class Comments extends DataContainer
      */
     private function threadedCommentsCallback()
     {
-        $singleCommentOptions = $this->options;
+        if (func_num_args() > 0) {
+            $singleCommentOptions = func_get_arg(0);
+        } else {
+            $singleCommentOptions = $this->options;
+        }
+
         if (function_exists('threadedComments')) {
             return threadedComments($this, $singleCommentOptions);
         }
@@ -239,7 +244,7 @@ class Comments extends DataContainer
             foreach ($children as $child) {
                 $this->row = $child;
                 $this->children = $this->getChildrenByParentId($this->row['id']);
-                $this->threadedCommentsCallback();
+                $this->threadedCommentsCallback(...func_get_args());
                 $this->row = $tmp;
             }
 
