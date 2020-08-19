@@ -123,7 +123,7 @@ Common::loadErrorAlert($errors->first());
                             <a href="comments.php?cid=<?php echo $val['cid'] ?>"><?php echo $cc ?></a>
                         <?php else: echo $cc;endif ?>
                     </td>
-                    <td><?php if ($val['status'] == 'waiting') echo '待审核'; else echo '已发布' ?><br>
+                    <td>
                         <abbr title="<?php echo $val['created_at'] ?>">
                             <?php echo dateX(2, $val['created_at']) ?></abbr>
                     </td>

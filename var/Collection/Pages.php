@@ -16,7 +16,8 @@ class Pages extends DataContainer
     public function __construct()
     {
         $this->setQueue(DB::table('contents')->whereIn('status', ['publish', 'password'])
-            ->whereNull('deleted_at')->where('type', 'page')->get());
+            ->whereNull('deleted_at')->where('type', 'page')->orderBy('order')
+            ->orderByDesc('created_at')->get());
     }
 
     public function id($return = false)

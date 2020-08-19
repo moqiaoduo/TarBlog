@@ -29,7 +29,7 @@ class Content
     /**
      * 获取内容
      * $params接收参数：
-     * type,page,search,status,category_id,tag_id,showAll,uid
+     * type,page,search,status,category_id,tag_id,showAll,uid,order
      * 支持文章、页面、附件
      *
      * @param array $params
@@ -69,6 +69,8 @@ class Content
 
         $uid = $params['uid'] ?? null;
 
+        $order = $params['order'] ?? ['field' => 'created_at', 'sort' => 'desc'];
+
         return $content->when($search, function ($query) use ($type, $search) {
             $query->where('title', 'like', "%$search%");
             if ($type != 'attachment') $query->orWhere('content', 'like', "%$search%");
@@ -79,7 +81,7 @@ class Content
             $query->where('uid', Auth::id());
         })->when($uid, function ($query) use ($uid) {
             $query->where('uid', $uid);
-        })->orderByDesc('created_at')->paginate($params['page']);
+        })->orderBy($order['field'], $order['sort'])->paginate($params['page']);
     }
 
     public static function getPosts($params = [])
@@ -92,6 +94,8 @@ class Content
     public static function getPages($params = [])
     {
         $params['type'] = 'page';
+
+        $params['order'] = ['field' => 'order', 'sort' => 'asc'];
 
         return self::getContents($params);
     }
