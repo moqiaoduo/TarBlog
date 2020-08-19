@@ -54,7 +54,7 @@ abstract class Article extends Base
         }
 
         // 假如用页面做首页，则手动添加参数，以免无法识别
-        if ($this->route->getName() == 'page.index') {
+        if ($page_index = $this->route->getName() == 'page.index') {
             $this->routeParams['cid'] = $this->options->indexPage;
         }
 
@@ -80,7 +80,8 @@ abstract class Article extends Base
 
         $this->_data = $data;
 
-        $this->_archiveTitle = $data->title;
+        if (!$page_index)
+            $this->_archiveTitle = $data->title;
 
         return true;
     }
