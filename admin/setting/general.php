@@ -5,9 +5,12 @@
  * Time: 12:13
  *
  * @var \Core\Options $options
+ * @var \Core\Http\Request $request
  */
 $extension = implode(',',unserialize($options->get('allowFileExt','a:0:{}')));
 \Helper\Common::loadAdminSettingStyle();
+
+$probablyUrl = $request->getProtocol() . $_SERVER['HTTP_HOST'];
 ?>
 <form method="post" class="form-container" action="do.php?a=Admin/Setting&p=general">
     <div class="form-group">
@@ -24,7 +27,14 @@ $extension = implode(',',unserialize($options->get('allowFileExt','a:0:{}')));
             <input type="text" id="siteUrl" name="siteUrl" required value="<?php echo $options->siteUrl?>"
                    autocomplete="off" class="form-control">
         </div>
-        <div class="form-description">站点地址主要用于生成内容的永久链接</div>
+        <div class="form-description">
+            站点地址主要用于生成内容的永久链接
+            <?php if ($probablyUrl != $options->siteUrl): ?>
+                <div class="alert alert-warning">
+                    当前地址 <?php echo $probablyUrl ?> 与上述设定值不一致
+                </div>
+            <?php endif ?>
+        </div>
     </div>
     <div class="form-group">
         <div class="form-inline">

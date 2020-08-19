@@ -76,7 +76,7 @@ class Request
             if (isset($val['name']) && is_array($val['name'])) {
                 $data = [];
                 $keys = array_keys($val);
-                for ($i=0; $i<count($val['name']); $i++) {
+                for ($i = 0; $i < count($val['name']); $i++) {
                     $item = [];
                     foreach ($keys as $k) $item[$k] = $val[$k][$i];
                     $data = new File(true, $item);
@@ -119,11 +119,11 @@ class Request
             $requestUri = $_SERVER['UNENCODED_URL'];
         } elseif (isset($_SERVER['REQUEST_URI'])) {
             $requestUri = $_SERVER['REQUEST_URI'];
-            $parts       = @parse_url($requestUri);
+            $parts = @parse_url($requestUri);
 
             if (isset($_SERVER['HTTP_HOST']) && strstr($requestUri, $_SERVER['HTTP_HOST'])) {
                 if (false !== $parts) {
-                    $requestUri  = (empty($parts['path']) ? '' : $parts['path'])
+                    $requestUri = (empty($parts['path']) ? '' : $parts['path'])
                         . ((empty($parts['query'])) ? '' : '?' . $parts['query']);
                 }
             } elseif (!empty($_SERVER['QUERY_STRING']) && empty($parts['query'])) {
@@ -137,7 +137,12 @@ class Request
             }
         }
 
-        return $this->_requestUri = (strlen($requestUri) == '1' ? $requestUri : substr($requestUri, 1));
+        $this->_requestUri = $requestUri;
+
+        if (substr($this->_requestUri, -1) == '/' && strlen($requestUri) != 1)
+            $this->_requestUri = substr($this->_requestUri, 0, strlen($this->_requestUri) - 1);
+
+        return $this->_requestUri;
     }
 
     /**
@@ -164,15 +169,15 @@ class Request
         } else {
             // Backtrack up the script_filename to find the portion matching
             // php_self
-            $path    = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
-            $file    = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
-            $segs    = explode('/', trim($file, '/'));
-            $segs    = array_reverse($segs);
-            $index   = 0;
-            $last    = count($segs);
+            $path = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+            $file = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
+            $segs = explode('/', trim($file, '/'));
+            $segs = array_reverse($segs);
+            $index = 0;
+            $last = count($segs);
             $baseUrl = '';
             do {
-                $seg     = $segs[$index];
+                $seg = $segs[$index];
                 $baseUrl = '/' . $seg . $baseUrl;
                 ++$index;
             } while (($last > $index) && (false !== ($pos = strpos($path, $baseUrl))) && (0 != $pos));
@@ -192,8 +197,7 @@ class Request
             // no match whatsoever; set it blank
             $finalBaseUrl = '';
         } else if ((strlen($requestUri) >= strlen($baseUrl))
-            && ((false !== ($pos = strpos($requestUri, $baseUrl))) && ($pos !== 0)))
-        {
+            && ((false !== ($pos = strpos($requestUri, $baseUrl))) && ($pos !== 0))) {
             // If using mod_rewrite or ISAPI_Rewrite strip the script filename
             // out of baseUrl. $pos !== 0 makes sure it is not matching a value
             // from PATH_INFO or QUERY_STRING
@@ -230,8 +234,7 @@ class Request
         }
 
         if ((NULL !== $finalBaseUrl)
-            && (false === ($pathInfo = substr($requestUri, strlen($finalBaseUrl)))))
-        {
+            && (false === ($pathInfo = substr($requestUri, strlen($finalBaseUrl))))) {
             // If substr() returns false then PATH_INFO is set to an empty string
             $pathInfo = '/';
         } elseif (NULL === $finalBaseUrl) {
@@ -337,5 +340,32 @@ class Request
         if (is_null($key)) return $this->_session;
 
         return $this->_session->get($key, $default);
+    }
+
+    /**
+     * 判断是否为Https
+     *
+     * @return bool
+     */
+    public function isHttps()
+    {
+        if (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
+            return true;
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            return true;
+        } elseif (!empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取协议头
+     *
+     * @return string
+     */
+    public function getProtocol()
+    {
+        return $this->isHttps() ? 'https://' : 'http://';
     }
 }

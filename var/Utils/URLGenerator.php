@@ -19,7 +19,7 @@ class URLGenerator
 
     public static function asset($request, $uri, $theme)
     {
-        return siteUrl(__THEME_DIR__ . '/' . $theme . '/' . $uri);
+        return self::getFullUrl(__THEME_DIR__ . '/' . $theme . '/' . $uri);
     }
 
     public static function route($name, $params = null)
@@ -45,12 +45,14 @@ class URLGenerator
         if (!get_option('rewrite')) $prefix = 'index.php';
         else $prefix = '';
 
-        return siteUrl($prefix . str_replace($keys, $values, $uri));
+        return self::getFullUrl($prefix . str_replace($keys, $values, $uri));
     }
 
     public static function getFullUrl($uri, $prefix = null)
     {
-        if (is_null($prefix)) $prefix = App::getInstance()->make('options')->get('siteUrl', '/');
+        $app = App::getInstance();
+
+        if (is_null($prefix)) $prefix = $app->make('options')->get('siteUrl', '/');
 
         return $prefix . (substr($uri, 0, 1) == '/' || substr($prefix, -1) == '/' ? $uri : '/' . $uri);
     }
