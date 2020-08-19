@@ -79,7 +79,7 @@ class Save extends NoRender
         }
 
         if ($p['type'] == 'page') // 只有发布的时候才能更改页面顺序
-            $page->order = is_numeric($p['order']) ? $p['order'] : $this->getNewOrderNum(); // 非数字自动分配
+            $page->order = is_numeric($p['order']) ? $p['order'] : $this->getNewOrderNum($cid); // 非数字自动分配
 
         $page->template = $p['template'];
         $page->status = $p['visibility'];
@@ -101,8 +101,11 @@ class Save extends NoRender
         return true;
     }
 
-    public function getNewOrderNum()
+    public function getNewOrderNum($cid)
     {
-        return $this->db->table('contents')->where('type', 'page')->max('order') + 1;
+        return $this->db->table('contents')->where('type', 'page')
+                ->when($cid, function ($query) use ($cid) {
+                    $query->where('cid', '<>', $cid);
+                })->max('order') + 1;
     }
 }
