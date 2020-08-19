@@ -17,9 +17,9 @@ if ($indexPage > 0) {
     Route::add('/', 'App\Article\Page')->name('page.index');
 
     if ($options->showArticleList && $alu = $options->articleListUrl)
-        Route::add($alu, 'App\Archive\Index');
+        Route::add($alu, 'App\Archive\Index')->name('index');
 } else {
-    Route::add('/', 'App\Archive\Index');
+    Route::add('/', 'App\Archive\Index')->name('index');
 }
 
 Route::add($category_url = $options->categoryUrl, 'App\Archive\Category')->name('category');

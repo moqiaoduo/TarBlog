@@ -20,7 +20,7 @@
         <div class="top">
             <div class="logo"><a href="<?php $this->options->siteUrl() ?>"><?php $this->options->title() ?></a></div>
             <div class="site-search">
-                <form id="search" method="get" action="<?php $this->options->siteUrl() ?>">
+                <form id="search" method="get" action="<?php echo route('index') ?>">
                     <label for="s" class="sr-only">搜索关键字</label>
                     <input type="text" name="s" class="text" placeholder="输入关键字搜索" value="<?php $this->search()?>">
                     <button type="submit" class="submit">搜索</button>
