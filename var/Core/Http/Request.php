@@ -64,13 +64,9 @@ class Request
      */
     public function __construct(Session $session)
     {
-        $this->_gets = array_filter($_GET, function ($val) {
-            return mb_check_encoding($val);
-        });
+        $this->_gets = $this->checkEncodingFilter($_GET);
 
-        $this->_posts = array_filter($_POST, function ($val) {
-            return mb_check_encoding($val);
-        });
+        $this->_posts = $this->checkEncodingFilter($_POST);
 
         foreach ($_FILES as $key => $val) {
             if (isset($val['name']) && is_array($val['name'])) {
@@ -90,6 +86,29 @@ class Request
         $this->_method = $_SERVER['REQUEST_METHOD'];
 
         $this->_session = $session;
+    }
+
+    /**
+     * 为了兼容某些环境，弃用了array_filter
+     *
+     * @param mixed $var
+     * @return mixed|bool
+     */
+    public function checkEncodingFilter($var)
+    {
+        if (is_array($var)) {
+            $data = [];
+            foreach ($var as $key => $val) {
+                if (mb_check_encoding($key) && ($val = $this->checkEncodingFilter($val)) !== false)
+                    $data[$key] = $val;
+            }
+            return $data;
+        } else {
+            if (!mb_check_encoding($var))
+                return false;
+        }
+
+        return $var;
     }
 
     /**
