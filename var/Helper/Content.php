@@ -251,7 +251,7 @@ class Content
                 $query->where('uid', Auth::id());
             })->when($uid, function ($query) use ($uid) {
                 $query->where('uid', $uid);
-            });
+            })->whereNull('deleted_at');
     }
 
     public static function saveContent(\Models\Content $content, $update = false)
