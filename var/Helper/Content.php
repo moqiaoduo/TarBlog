@@ -190,7 +190,7 @@ class Content
         // 文章所保存的draft的parent
         $save_draft = self::draftQuery($params)->where('parent', '>', 0)->pluck('parent');
 
-        return self::$draft_ids = array_merge($only_draft, $save_draft);
+        return self::$draft_ids = array_unique(array_merge($only_draft, $save_draft));
     }
 
     /**
