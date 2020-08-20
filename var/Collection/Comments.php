@@ -154,6 +154,16 @@ class Comments extends DataContainer
             }, true)->orderBy('created_at', get_option('commentsOrder', 'DESC'))->get();
     }
 
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    public function hasChildren()
+    {
+        return is_array($this->children) && count($this->children) > 0;
+    }
+
     /**
      * 评论回调函数
      *
