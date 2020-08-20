@@ -45,7 +45,7 @@ class Content extends Model
             ->where(function ($query) {
                 $query->where('status', 'approved')->orWhere('status', 'pending')->when(Auth::id(), function ($query) {
                     $query->where('authorId', Auth::id());
-                }, true)->when(!Auth::id(), function ($query) {
+                })->when(!Auth::id(), function ($query) {
                     $query->where('name', Base::remember('author', true))
                         ->where('email', Base::remember('mail', true)); // URL不参与判断
                 });
