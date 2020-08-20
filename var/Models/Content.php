@@ -42,14 +42,14 @@ class Content extends Model
     public function getTopLevelCommentPaginate($page, $pageSize)
     {
         $query = DB::table('comments')->where('cid', $this->cid)->where('parent', 0)
-            ->when(!(Auth::id() && Auth::user()->isAdmin()), function ($query) {
+            ->where(function ($query) {
                 $query->where('status', 'approved')->orWhere('status', 'pending')->when(Auth::id(), function ($query) {
-                    $query->where('authorId', Auth::id())->orWhere('ownerId', Auth::id());
+                    $query->where('authorId', Auth::id());
                 }, true)->when(!Auth::id(), function ($query) {
                     $query->where('name', Base::remember('author', true))
                         ->where('email', Base::remember('mail', true)); // URL不参与判断
                 });
-            }, true)->orderBy('created_at', get_option('commentsOrder', 'DESC'));
+            })->orderBy('created_at', get_option('commentsOrder', 'DESC'));
 
         // 启用分页，才用paginate
         if (get_option('commentsPageBreak')) {
