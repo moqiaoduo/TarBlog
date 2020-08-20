@@ -11,7 +11,7 @@ require_once __DIR__ . "/helpers.php";
 
 define('__BOOTED__', true);
 
-define('__VERSION__', 'v0.3.0'); // 真正定义程序版本的地方
+define('__VERSION__', 'v0.3.1'); // 真正定义程序版本的地方
 
 spl_autoload_register(function ($class) {
     if (substr($class, -6) == 'Plugin') {
