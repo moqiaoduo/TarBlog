@@ -34,7 +34,7 @@ Common::loadErrorAlert($errors->first());
 ?>
     <div class="alert alert-info">
         原则上，需要留有至少一个管理员账号，否则网站功能会有所缺失<br>
-        但是删除时并不会对管理员账号数量进行判断，而且无法删除当前登录的账号，因此理论上不会删除最后一个管理员账号
+        虽然删除时并不会对管理员账号数量进行判断，但是删除账号需要管理也权限，而且无法删除当前登录的账号，因此理论上不会删除最后一个管理员账号
     </div>
     <div class="box no-margin-bottom">
         <form class="box-header with-border flex justify-between mobile-no-flex" method="get">
