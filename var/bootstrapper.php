@@ -72,6 +72,7 @@ register_shutdown_function(function () {
     // 接下来处理一些脚本结束后的事情
     $app->make('session')->save();
     $app->make('options')->save();
+    ob_end_flush(); // 结束时才显示内容，防止session未保存
 });
 
 $app = \Core\Container\Manager::getInstance();
@@ -84,6 +85,8 @@ $app->addContainerBinding('router', 'Core\Routing\Router');
 $app->addContainerBinding('auth', 'Core\Auth');
 $app->addContainerBinding('dir', 'Core\Dir');
 $app->addContainerBinding('validate', 'Core\Validate');
+
+ob_start(); // 将显示的内容储存到缓冲区，程序结束再释放
 
 /**
  * 显示错误页面或调试页面
