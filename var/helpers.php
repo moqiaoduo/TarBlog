@@ -138,7 +138,8 @@ if (!function_exists('redirect')) {
      */
     function redirect($url, $with = null)
     {
-        ob_clean();
+        ob_end_clean();
+        ob_start();
         if (is_callable($with)) call_user_func($with);
         header('location:' . $url);
         die();
