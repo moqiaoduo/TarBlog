@@ -33,8 +33,7 @@ class LoadTree extends NoRender
                 $name = CodeMirror::NAMES[$file] . '(' . $file . ')';
             } elseif (substr($file, 0, 5) === 'page-') {
                 $info = PHPComment::parseFromFile($filePath);
-                if (isset($info['template'])) $name = '独立页面模板: ' . $info['template'] .
-                    '<br><span class="nonessential">(' . $file . ')</span>';
+                if (isset($info['template'])) $name = '独立页面模板: ' . $info['template'] . '(' . $file . ')';
                 else $name = $file;
             } else {
                 $name = $file;
