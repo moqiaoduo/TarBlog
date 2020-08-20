@@ -59,9 +59,11 @@ PHP;
 
 define('__ROOT_DIR__', dirname(__FILE__));
 
-require_once __ROOT_DIR__ . "/var/bootstrapper.php";
-
 define('__DEBUG__', false); // 这个是调试用的，一般人请不要打开
+
+define('__SHOW_ERROR__', false); // 同上
+
+require_once __ROOT_DIR__ . "/var/bootstrapper.php";
 
 $session = $app->make('session');
 
@@ -144,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `comments_created_at_index` (`created_at`) USING BTREE,
   KEY `comments_cid_index` (`cid`) USING BTREE
-)
+) DEFAULT CHARACTER SET = utf8;
 SQL
                 );
                 $db->exec(<<<SQL
@@ -168,19 +170,19 @@ CREATE TABLE IF NOT EXISTS `contents` (
   PRIMARY KEY (`cid`) USING BTREE,
   UNIQUE KEY `contents_slug_unique` (`slug`) USING BTREE,
   KEY `contents_created_at_index` (`created_at`) USING BTREE
-)
+) DEFAULT CHARACTER SET = utf8;
 SQL
                 );
                 $db->exec(<<<SQL
 CREATE TABLE IF NOT EXISTS `fields` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(8) COLLATE utf8mb4_unicode_ci DEFAULT 'str',
-  `str_value` text COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) NOT NULL,
+  `type` varchar(8) DEFAULT 'str',
+  `str_value` text,
   `int_value` int(11) DEFAULT NULL,
   `float_value` float DEFAULT NULL,
   PRIMARY KEY (`cid`,`name`) USING BTREE
-)
+) DEFAULT CHARACTER SET = utf8;
 SQL
                 );
                 $db->exec(<<<SQL
@@ -197,7 +199,7 @@ CREATE TABLE IF NOT EXISTS `metas` (
   PRIMARY KEY (`mid`) USING BTREE,
   KEY `metas_slug_index` (`slug`) USING BTREE,
   KEY `metas_created_at_index` (`created_at`) USING BTREE
-)
+) DEFAULT CHARACTER SET = utf8;
 SQL
                 );
                 $db->exec(<<<SQL
@@ -206,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `options` (
   `user` int(10) unsigned NOT NULL DEFAULT '0',
   `value` longtext,
   PRIMARY KEY (`name`,`user`) USING BTREE
-)
+) DEFAULT CHARACTER SET = utf8;
 SQL
                 );
                 $db->exec(<<<SQL
@@ -214,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `relationships` (
   `cid` int(10) unsigned NOT NULL,
   `mid` int(10) unsigned NOT NULL,
   PRIMARY KEY (`cid`,`mid`) USING BTREE
-)
+) DEFAULT CHARACTER SET = utf8;
 SQL
                 );
                 $db->exec(<<<SQL
@@ -232,7 +234,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `users_username_unique` (`username`) USING BTREE,
   UNIQUE KEY `users_email_unique` (`email`) USING BTREE
-)
+) DEFAULT CHARACTER SET = utf8;
 SQL
                 );
                 // 写入基本选项
