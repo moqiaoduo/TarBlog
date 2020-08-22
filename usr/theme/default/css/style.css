@@ -269,6 +269,10 @@ ol.comment-list {
     background: #FFF9E8;
 }
 
+.comment-content {
+    word-wrap: break-word;
+}
+
 .comment-children {
     margin-top: 10px;
 }
