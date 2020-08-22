@@ -30,7 +30,8 @@ foreach ($plugin->setting() as $setting) {
 }
 
 if (file_exists($file = __ROOT_DIR__ . __ADMIN_DIR__ . 'setting/' . $page . '.php')) {
-    $trans = ["comment" => "评论设置", "general" => "常规设置", "reading" => "阅读设置", "url" => "固定链接设置"];
+    $trans = ["comment" => "评论设置", "general" => "常规设置", "reading" => "阅读设置", "url" => "固定链接设置",
+        "html_purifier" => "HTML Purifier 设置"];
     Common::setTitle($trans[$page]);
     include "header.php";
     Common::loadSuccessAlert($session->get('success'));

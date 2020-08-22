@@ -91,6 +91,20 @@ EOF
                     'rewrite' => $rewrite
                 ];
                 break;
+            case 'html_purifier':
+                $options = [
+                    'html_purifier_auto_empty_clean' => $request->post('html_purifier_auto_empty_clean'),
+                    'html_purifier_cache' => $request->post('html_purifier_cache'),
+                    'html_purifier_cache_path' => $request->post('html_purifier_cache_path'),
+                    'html_purifier_article' => $request->post('html_purifier_article'),
+                    'html_purifier_article_allow_html' => $request->post('html_purifier_article_allow_html'),
+                    'html_purifier_article_allow_css' => $request->post('html_purifier_article_allow_css'),
+                    'html_purifier_article_auto_para' => $request->post('html_purifier_article_auto_para'),
+                    'html_purifier_comment_allow_html' => $request->post('html_purifier_comment_allow_html'),
+                    'html_purifier_comment_allow_css' => $request->post('html_purifier_comment_allow_css'),
+                    'html_purifier_comment_auto_para' => $request->post('html_purifier_comment_auto_para'),
+                ];
+                break;
             default:
                 $options = [];
         }

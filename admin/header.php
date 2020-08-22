@@ -156,6 +156,7 @@ if (!Auth::hasLogin()) redirect(__ADMIN_DIR__ . 'login.php');
                         <li class="nav-item"><a href="./setting.php?p=reading">阅读</a></li>
                         <li class="nav-item"><a href="./setting.php?p=comment">评论</a></li>
                         <li class="nav-item"><a href="./setting.php?p=url">固定链接</a></li>
+                        <li class="nav-item"><a href="./setting.php?p=html_purifier">HTML Purifier</a></li>
                     <!-- hook -->
                     <?php foreach ($plugin->setting() as $setting):
                         if (isset($setting['show']) && $setting['show']):?>
