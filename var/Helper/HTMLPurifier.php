@@ -27,9 +27,10 @@ class HTMLPurifier
 
         self::$config->set('HTML.Doctype', 'HTML 4.01 Transitional');
 
-        self::$config->set('AutoFormat.RemoveEmpty', true);
+        self::$config->set('AutoFormat.RemoveEmpty', get_option('html_purifier_auto_empty_clean') == 1);
 
-        self::$config->set('Cache.DefinitionImpl', null); // 默认禁用缓存
+        if (!get_option('html_purifier_cache'))
+            self::$config->set('Cache.DefinitionImpl', null);
     }
 
     /**

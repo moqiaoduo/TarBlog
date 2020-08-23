@@ -10,6 +10,7 @@ namespace App\Admin\Page;
 use App\NoRender;
 use Core\Validate;
 use Helper\Content;
+use Helper\HTMLPurifier;
 use Models\Page;
 use Utils\Auth;
 
@@ -21,6 +22,18 @@ class Save extends NoRender
     public function execute(): bool
     {
         Auth::check('page');
+
+        $options = $this->options;
+
+        if ($options->html_purifier_article) {
+            HTMLPurifier::load();
+
+            HTMLPurifier::config(['HTML.Allowed' => $options->get('html_purifier_article_allow_html'),
+                'CSS.AllowedProperties' => $options->get('html_purifier_article_allow_css'),
+                'AutoFormat.AutoParagraph' => $options->get('html_purifier_article_auto_para') == 1]);
+
+            $this->plugin->article_html_purifier();
+        }
 
         $p = $this->request->post();
 
@@ -40,12 +53,14 @@ class Save extends NoRender
 
         $title = empty($p['title']) ? '未命名页面' : $p['title'];
 
+        $content = $options->html_purifier_article ? HTMLPurifier::clean($p['content']) : $p['content'];
+
         if (empty($p['created_at']))
             $created_at = dateX();
         else
             $created_at = dateX(0, $p['created_at']);
 
-        $base_data = ['title' => $title, 'content' => $p['content'], 'uid' => $uid,
+        $base_data = ['title' => $title, 'content' => $content, 'uid' => $uid,
             'created_at' => $created_at, 'updated_at' => dateX()];
 
         if (($cid = $p['id']) > 0) {
@@ -69,7 +84,7 @@ class Save extends NoRender
                     ->where('type', 'page_draft')->delete();
                 $page->type = 'page';
                 $page->title = $title;
-                $page->content = $p['content'];
+                $page->content = $content;
                 $page->updated_at = dateX();
                 $page->created_at = $created_at;
             }

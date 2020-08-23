@@ -9,6 +9,7 @@ namespace App;
 
 use Core\Http\Cookie;
 use Core\Http\Token;
+use Helper\HTMLPurifier;
 use Helper\Sync;
 use Models\Comment as Model;
 use Models\Page;
@@ -24,6 +25,16 @@ class Comment extends NoRender
      */
     public function execute(): bool
     {
+        $options = $this->options;
+
+        HTMLPurifier::load();
+
+        HTMLPurifier::config(['HTML.Allowed' => $options->get('html_purifier_comment_allow_html'),
+            'CSS.AllowedProperties' => $options->get('html_purifier_comment_allow_css'),
+            'AutoFormat.AutoParagraph' => $options->get('html_purifier_comment_auto_para') == 1]);
+
+        $this->plugin->comment_html_purifier(); // 可更改评论时的HTML Purifier设置
+
         $request = $this->request;
 
         if (!Token::verify($request->post('_token')))
@@ -38,7 +49,7 @@ class Comment extends NoRender
         $author = $request->post('author');
         $mail = $request->post('mail');
         $url = $request->post('url');
-        $text = $request->post('text');
+        $text = HTMLPurifier::clean($request->post('text'));
         $slug = $this->routeParams['slug'];
         $cid = $this->routeParams['cid'];
 
@@ -58,8 +69,6 @@ class Comment extends NoRender
         if (is_null($article)) return false;
 
         $comment = new Model(auto_fill_time());
-
-        $options = $this->options;
 
         $comment->cid = $article->cid;
 

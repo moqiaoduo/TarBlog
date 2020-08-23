@@ -10,6 +10,7 @@ namespace App\Admin\Post;
 use App\NoRender;
 use Core\Validate;
 use Helper\Content;
+use Helper\HTMLPurifier;
 use Helper\Sync;
 use Models\Post;
 use Utils\Auth;
@@ -22,6 +23,18 @@ class Save extends NoRender
     public function execute(): bool
     {
         Auth::check('post-base');
+
+        $options = $this->options;
+
+        if ($options->html_purifier_article) {
+            HTMLPurifier::load();
+
+            HTMLPurifier::config(['HTML.Allowed' => $options->get('html_purifier_article_allow_html'),
+                'CSS.AllowedProperties' => $options->get('html_purifier_article_allow_css'),
+                'AutoFormat.AutoParagraph' => $options->get('html_purifier_article_auto_para') == 1]);
+
+            $this->plugin->article_html_purifier();
+        }
 
         $p = $this->request->post();
 
@@ -41,12 +54,14 @@ class Save extends NoRender
 
         $title = empty($p['title']) ? '未命名文章' : $p['title'];
 
+        $content = $options->html_purifier_article ? HTMLPurifier::clean($p['content']) : $p['content'];
+
         if (empty($p['created_at']))
             $created_at = dateX();
         else
             $created_at = dateX(0, $p['created_at']);
 
-        $base_data = ['title' => $title, 'content' => $p['content'], 'uid' => $uid,
+        $base_data = ['title' => $title, 'content' => $content, 'uid' => $uid,
             'created_at' => $created_at, 'updated_at' => dateX()];
 
         if (($cid = $p['id']) > 0) {
@@ -73,7 +88,7 @@ class Save extends NoRender
                     ->where('type', 'post_draft')->delete();
                 $post->type = 'post';
                 $post->title = $title;
-                $post->content = $p['content'];
+                $post->content = $content;
                 $post->updated_at = dateX();
                 $post->created_at = $created_at;
             }
@@ -101,7 +116,7 @@ class Save extends NoRender
 
         if (!empty($p['attachment'])) Content::link2P($p['attachment'], $post->cid);
 
-        if (empty($p['category'])) $p['category'][] = $this->options->get('defaultCategory', 1);
+        if (empty($p['category'])) $p['category'][] = $options->get('defaultCategory', 1);
 
         Sync::meta($post->cid, array_merge($p['category'], Content::getTagsId($post->cid, $p['tag'])));
 

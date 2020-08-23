@@ -69,7 +69,7 @@ $default_cache_path = str_replace('/', DIRECTORY_SEPARATOR, $default_cache_path)
                     <div class="form-description">
                         为了获取最佳性能, 建议开启缓存, 需要确保
                         <code id="cache-path-now">
-                            <?php echo $cache_path = $options->get('html_purifier_cache_path', $default_cache_path) ?>
+                            <?php echo $cache_path = $options->get('html_purifier_cache_path') ?: $default_cache_path ?>
                         </code>
                         有写入权限.
                         <?php if ($options->html_purifier_cache && substr(sprintf("%o", fileperms($cache_path)), -4) < 0755): ?>
@@ -110,7 +110,7 @@ $default_cache_path = str_replace('/', DIRECTORY_SEPARATOR, $default_cache_path)
                         </div>
                     </div>
                     <div class="form-description">保存文章时, 启用HTML Purifier过滤检查能够保护您的内容不被进行XSS攻击.
-                        即便您的浏览器插件有可能进行注入行为, 我们也能在保存时进行过滤. 一般情况下, 建议您开启.</div>
+                        即便您的浏览器插件有可能进行注入行为, 我们也能在保存时进行过滤. 一般而言, 若您的文章内容比较简单, 建议您开启.</div>
                 </div>
                 <div class="form-group">
                     <div class="form-inline">
