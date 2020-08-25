@@ -78,7 +78,8 @@ class Comments extends DataContainer
     {
         $this->content = $model;
 
-        $this->comments = $this->content->getTopLevelCommentPaginate(1, get_option('commentsPageSize'));
+        $this->comments = $this->content->getTopLevelCommentPaginate(app('request')->get('page') ?:
+            get_option('commentsPageDisplay', 'first'), get_option('commentsPageSize'));
 
         if ($this->comments instanceof Paginator)
             $this->setQueue($this->comments->getData());

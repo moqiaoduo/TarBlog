@@ -34,14 +34,24 @@ use Utils\DB;
  */
 class Content extends Model
 {
+    /**
+     * 获取作者信息
+     *
+     * @return array|null
+     */
     public function author()
     {
         return DB::table('users')->where('id', $this->uid)->first();
     }
 
-    public function getTopLevelCommentPaginate($page, $pageSize)
+    /**
+     * 评论query
+     *
+     * @return \Core\Database\Query
+     */
+    private function topLevelCommentQuery()
     {
-        $query = DB::table('comments')->where('cid', $this->cid)->where('parent', 0)
+        return DB::table('comments')->where('cid', $this->cid)->where('parent', 0)
             ->where(function ($query) {
                 $query->where('status', 'approved')->orWhere('status', 'pending')->when(Auth::id(), function ($query) {
                     $query->where('authorId', Auth::id());
@@ -50,9 +60,36 @@ class Content extends Model
                         ->where('email', Base::remember('mail', true)); // URL不参与判断
                 });
             })->orderBy('created_at', get_option('commentsOrder', 'DESC'));
+    }
+
+    /**
+     * 获取评论
+     *
+     * @param $page
+     * @param $pageSize
+     * @return \Core\Paginator|mixed|null
+     */
+    public function getTopLevelCommentPaginate($page, $pageSize)
+    {
+        $query = $this->topLevelCommentQuery();
 
         // 启用分页，才用paginate
         if (get_option('commentsPageBreak')) {
+            // 特殊页数，第一页和最后一页
+            switch ($page) {
+                case 'first':
+                    $page = 1;
+                    break;
+                case 'last':
+                    // 计算最后一页
+                    $count = $this->topLevelCommentQuery()->count();
+                    $total = ceil($count / $pageSize);
+                    $page = $total;
+                    break;
+            }
+
+            if ($page < 1) $page = 1;
+
             return $query->paginate($page, $pageSize, 'cp');
         }
 
