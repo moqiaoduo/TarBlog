@@ -111,7 +111,7 @@ class Comments extends DataContainer
     public function listComments($singleCommentOptions = [])
     {
         //初始化一些变量
-        $defaultOptions = array(
+        $defaultOptions = [
             'before' => '<ol class="comment-list">',
             'after' => '</ol>',
             'beforeAuthor' => '',
@@ -122,7 +122,7 @@ class Comments extends DataContainer
             'commentStatus' => '您的评论正等待审核！',
             'avatarSize' => 32,
             'defaultAvatar' => NULL
-        );
+        ];
 
         $this->options = $options = array_merge($defaultOptions, (array)$singleCommentOptions);
 
@@ -272,8 +272,9 @@ class Comments extends DataContainer
                 $this->row = $child;
                 $this->children = $this->getChildrenByParentId($this->row['id']);
                 $this->threadedCommentsCallback(...func_get_args());
-                $this->row = $tmp;
             }
+
+            $this->row = $tmp; // 结束以后再赋值，减少执行时间
 
             //在子评论之后输出
             echo $this->options['after'];
@@ -283,7 +284,7 @@ class Comments extends DataContainer
     }
 
     /**
-     * 重载alt函数,以适应多级评论
+     * 根据规则选择参数输出
      *
      * @return void
      */
@@ -336,12 +337,13 @@ class Comments extends DataContainer
         if (get_option('commentsAvatar')) {
             $rating = get_option('commentsAvatarRating', 'G');
 
-            $this->plugin->trigger($plugged)->avatar($name = $this->row['name'], $email = $this->row['email']);
+            $this->plugin->trigger($plugged)->avatar($name = $this->row['name'],
+                $email = $this->row['email'], $default);
 
             if (!$plugged) {
                 $md5 = md5($email);
 
-                $url = "https://secure.gravatar.com/avatar/$md5?s=$size&r=$rating";
+                $url = "https://secure.gravatar.com/avatar/$md5?s=$size&r=$rating&d=$default";
 
                 echo '<img class="avatar" src="' . $url . '" alt="' .
                     $name . '" width="' . $size . '" height="' . $size . '" />';
@@ -358,7 +360,7 @@ class Comments extends DataContainer
     public function reply($word = '')
     {
         if (get_option('commentsThreaded') && $this->content->allowComment) {
-            $word = empty($word) ? '回复' : $word;
+            $word = $word ?: '回复';
 
             $this->plugin->trigger($plugged)->reply($word, $this);
 
@@ -378,7 +380,7 @@ class Comments extends DataContainer
     public function cancelReply($word = '')
     {
         if (get_option('commentsThreaded')) {
-            $word = empty($word) ? '取消回复' : $word;
+            $word = $word ?: '取消回复';
 
             $this->plugin->trigger($plugged)->cancelReply($word, $this);
 
