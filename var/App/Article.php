@@ -27,20 +27,6 @@ abstract class Article extends Base
     protected $_data;
 
     /**
-     * 上一篇文章缓存
-     *
-     * @var PostModel
-     */
-    private $_prevPost;
-
-    /**
-     * 下一篇文章缓存
-     *
-     * @var PostModel
-     */
-    private $_nextPost;
-
-    /**
      * @inheritDoc
      */
     public function execute(): bool
@@ -87,6 +73,8 @@ abstract class Article extends Base
     }
 
     /**
+     * 检查文章有效性并返回数据（模型）
+     *
      * @param string $type
      * @param string $model
      * @param array $routeParams
@@ -130,6 +118,63 @@ abstract class Article extends Base
         return $data;
     }
 
+    /**
+     * 获取评论数据
+     *
+     * @return Comments
+     */
+    public function comments()
+    {
+        return new Comments($this->_data);
+    }
+
+    /**
+     * 判断是否允许操作
+     *
+     * @param string $key
+     * @return false
+     */
+    public function allow($key)
+    {
+        switch ($key) {
+            case 'comment':
+                $rs = $this->_data->allowComment;
+                if ($rs)
+                    $this->enaCommentJS = true;
+                break;
+            default:
+                $rs = false;
+        }
+        return $rs;
+    }
+
+    /**
+     * 获取作者信息
+     */
+    public function author()
+    {
+        if ($user = $this->_data->author())
+            echo '<a href="' . \route('author', $this->_data->uid) . '">' .
+                ($user['name'] ?: $user['username']) . '</a>';
+        else
+            echo '已删除的用户';
+    }
+
+    /**
+     * 获取文章id
+     *
+     * @return mixed
+     */
+    public function _id()
+    {
+        return $this->_data->cid;
+    }
+
+    /**
+     * 获取文章标题
+     *
+     * @return mixed
+     */
     public function _title()
     {
         return $this->_data->title;
@@ -198,88 +243,13 @@ HTML;
         }
     }
 
-    private function getPrevPost()
-    {
-        if (!is_null($this->_prevPost))
-            return $this->_prevPost;
-
-        return $this->_prevPost = $this->_data->prev();
-    }
-
-    public function hasPrevPost()
-    {
-        return !is_null($this->getPrevPost());
-    }
-
-    public function _prevUrl()
-    {
-        return \route('post', Route::fillPostParams($this->getPrevPost()));
-    }
-
-    public function _prevTitle()
-    {
-        return $this->getPrevPost()->title;
-    }
-
-    private function getNextPost()
-    {
-        if (!is_null($this->_nextPost))
-            return $this->_nextPost;
-
-        return $this->_nextPost = $this->_data->next();
-    }
-
-    public function hasNextPost()
-    {
-        return !is_null($this->getNextPost());
-    }
-
-    public function _nextUrl()
-    {
-        return \route('post', Route::fillPostParams($this->getNextPost()));
-    }
-
-    public function _nextTitle()
-    {
-        return $this->getNextPost()->title;
-    }
-
-    public function comments()
-    {
-        return new Comments($this->_data);
-    }
-
-    public function allow($key)
-    {
-        switch ($key) {
-            case 'comment':
-                $rs = $this->_data->allowComment;
-                if ($rs)
-                    $this->enaCommentJS = true;
-                break;
-            default:
-                $rs = false;
-        }
-        return $rs;
-    }
-
+    /**
+     * 评论提交链接
+     *
+     * @return string
+     */
     public function _commentUrl()
     {
         return \route($this->type . '.comment', $this->routeParams);
-    }
-
-    public function _id()
-    {
-        return $this->_data->cid;
-    }
-
-    public function author()
-    {
-        if ($user = $this->_data->author())
-            $author = $user['name'] ?: $user['username'];
-        else
-            $author = '已删除的用户';
-
-        echo '<a href="' . \route('author', $this->_data->uid) . '">' . $author . '</a>';
     }
 }

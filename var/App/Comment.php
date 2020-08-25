@@ -40,12 +40,6 @@ class Comment extends NoRender
         if (!Token::verify($request->post('_token')))
             showErrorPage('页面已过期，请返回刷新后重新提交', 419);
 
-        $parent = $request->post('parent', 0);
-
-        if ($parent > 0 && !DB::table('comments')->where('id', $parent)
-            ->where('status', 'approved')->exists())
-            showErrorPage('该评论无法回复，可能的原因：<br>1.该评论未审核通过<br>2.该评论被标记为垃圾<br>3.该评论已被删除');
-
         $author = $request->post('author');
         $mail = $request->post('mail');
         $url = $request->post('url');
@@ -67,6 +61,15 @@ class Comment extends NoRender
             $type == 'post' ? Post::class : Page::class, $this->routeParams, $this->db);
 
         if (is_null($article)) return false;
+
+        if (!$article->allowComment)
+            showErrorPage('评论已关闭', 403);
+
+        $parent = $request->post('parent', 0);
+
+        if ($parent > 0 && !DB::table('comments')->where('id', $parent)
+            ->where('status', 'approved')->exists())
+            showErrorPage('该评论无法回复，可能的原因：<br>1.该评论未审核通过<br>2.该评论被标记为垃圾<br>3.该评论已被删除');
 
         $comment = new Model(auto_fill_time());
 

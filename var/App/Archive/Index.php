@@ -13,9 +13,7 @@ class Index extends Archive
 {
     public function execute() : bool
     {
-        $search = $this->request->get('s');
-
-        if ($search) {
+        if ($search = $this->search) {
             $this->type = 'search';
             $this->_archiveTitle = $search;
         }

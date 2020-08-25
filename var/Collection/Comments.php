@@ -141,6 +141,12 @@ class Comments extends DataContainer
         }
     }
 
+    /**
+     * 读取数据库中评论的回复
+     *
+     * @param int $id
+     * @return mixed|null
+     */
     public function getChildrenByParentId($id)
     {
         return DB::table('comments')->where('parent', $id)
@@ -154,11 +160,21 @@ class Comments extends DataContainer
             }, true)->orderBy('created_at', get_option('commentsOrder', 'DESC'))->get();
     }
 
+    /**
+     * 外部获取当前评论回复
+     *
+     * @return mixed
+     */
     public function getChildren()
     {
         return $this->children;
     }
 
+    /**
+     * 外部判断是否有评论回复
+     *
+     * @return bool
+     */
     public function hasChildren()
     {
         return is_array($this->children) && count($this->children) > 0;
@@ -295,51 +311,6 @@ class Comments extends DataContainer
     }
 
     /**
-     * 取消评论回复链接
-     *
-     * @param string $word 取消回复链接文字
-     * @return void
-     */
-    public function cancelReply($word = '')
-    {
-        if (get_option('commentsThreaded')) {
-            $word = empty($word) ? '取消回复' : $word;
-
-            $this->plugin->trigger($plugged)->cancelReply($word, $this);
-
-            if (!$plugged) {
-                echo '<a id="cancel-comment-reply-link" href="#" rel="nofollow" style="display: none;"
-onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
-            }
-        }
-    }
-
-    public function _permalink()
-    {
-        return siteUrl(app('request')->getRequestUri() . '#' . $this->theId);
-    }
-
-    /**
-     * element id
-     *
-     * @return string|void
-     */
-    public function _theId()
-    {
-        return 'comment-' . $this->id;
-    }
-
-    /**
-     * 评论id
-     *
-     * @return mixed
-     */
-    public function _id()
-    {
-        return $this->row['id'];
-    }
-
-    /**
      * 显示评论作者
      */
     public function author()
@@ -378,13 +349,43 @@ onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
     }
 
     /**
-     * 获取评论日期
+     * 评论回复链接
      *
-     * @return false|string
+     * @param string $word 回复链接文字
+     * @return void
      */
-    public function _date()
+    public function reply($word = '')
     {
-        return dateX(1, $this->row['created_at']);
+        if (get_option('commentsThreaded') && $this->content->allowComment) {
+            $word = empty($word) ? '回复' : $word;
+
+            $this->plugin->trigger($plugged)->reply($word, $this);
+
+            if (!$plugged) {
+                echo '<a href="#' . $this->theId . '" rel="nofollow" onclick="return TarBlogComment.reply(\'' .
+                    $this->theId . '\', ' . $this->id . ');">' . $word . '</a>';
+            }
+        }
+    }
+
+    /**
+     * 取消评论回复链接
+     *
+     * @param string $word 取消回复链接文字
+     * @return void
+     */
+    public function cancelReply($word = '')
+    {
+        if (get_option('commentsThreaded')) {
+            $word = empty($word) ? '取消回复' : $word;
+
+            $this->plugin->trigger($plugged)->cancelReply($word, $this);
+
+            if (!$plugged) {
+                echo '<a id="cancel-comment-reply-link" href="#" rel="nofollow" style="display: none;"
+onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
+            }
+        }
     }
 
     /**
@@ -411,6 +412,41 @@ onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
             );
     }
 
+    public function _permalink()
+    {
+        return siteUrl(app('request')->getRequestUri() . '#' . $this->theId);
+    }
+
+    /**
+     * element id
+     *
+     * @return string|void
+     */
+    public function _theId()
+    {
+        return 'comment-' . $this->id;
+    }
+
+    /**
+     * 评论id
+     *
+     * @return mixed
+     */
+    public function _id()
+    {
+        return $this->row['id'];
+    }
+
+    /**
+     * 获取评论日期
+     *
+     * @return false|string
+     */
+    public function _date()
+    {
+        return dateX(1, $this->row['created_at']);
+    }
+
     /**
      * 评论内容
      *
@@ -419,25 +455,5 @@ onclick="return TarBlogComment.cancelReply();">' . $word . '</a>';
     public function _content()
     {
         return $this->row['content'];
-    }
-
-    /**
-     * 评论回复链接
-     *
-     * @param string $word 回复链接文字
-     * @return void
-     */
-    public function reply($word = '')
-    {
-        if (get_option('commentsThreaded') && $this->content->allowComment) {
-            $word = empty($word) ? '回复' : $word;
-
-            $this->plugin->trigger($plugged)->reply($word, $this);
-
-            if (!$plugged) {
-                echo '<a href="#' . $this->theId . '" rel="nofollow" onclick="return TarBlogComment.reply(\'' .
-                    $this->theId . '\', ' . $this->id . ');">' . $word . '</a>';
-            }
-        }
     }
 }

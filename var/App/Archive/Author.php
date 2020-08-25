@@ -12,26 +12,22 @@ use Models\User;
 
 class Author extends Archive
 {
-    /**
-     * @var User
-     */
-    private $_user;
+    protected $type = 'author';
 
     /**
      * @inheritDoc
      */
     public function execute(): bool
     {
-        $this->_user = $this->db->table('users')->where('id', $this->routeParams['id'])
+        $user = $this->db->table('users')->where('id', $this->routeParams['id'])
             ->firstWithModel(User::class);
 
-        if (is_null($this->_user)) return false;
+        if (is_null($user)) return false;
 
-        $this->type = 'author';
-        $this->_archiveTitle = $this->_user->name ?: $this->_user->username;
+        $this->_archiveTitle = $user->name ?: $user->username;
 
         $this->paginator = $this->db->table('contents')->whereNull('deleted_at')
-            ->where('type', 'post')->where('uid', $this->_user->id)
+            ->where('type', 'post')->where('uid', $user->id)
             ->whereIn('status', ['publish', 'password'])->orderByDesc('created_at')
             ->paginate($this->request->get('page', 1), $this->options->get('pageSize', 10));
 

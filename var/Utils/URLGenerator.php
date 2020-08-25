@@ -17,7 +17,7 @@ class URLGenerator
         return rtrim($prefix, '/') . '/' . str_replace('//', '/', ltrim($path, '/'));
     }
 
-    public static function asset($request, $uri, $theme)
+    public static function asset($uri, $theme)
     {
         return self::getFullUrl(__THEME_DIR__ . '/' . $theme . '/' . $uri);
     }

@@ -146,16 +146,21 @@ abstract class Base
         $this->route = $route;
     }
 
-    public function _search()
-    {
-        return $this->request->get('s');
-    }
-
+    /**
+     * 独立页面
+     *
+     * @return Pages
+     */
     public function page()
     {
         return new Pages();
     }
 
+    /**
+     * 分类
+     *
+     * @return Categories
+     */
     public function category()
     {
         return new Categories();
@@ -180,9 +185,12 @@ abstract class Base
      */
     public function asset($uri)
     {
-        echo URLGenerator::asset($this->request, $uri, $this->_theme);
+        echo URLGenerator::asset($uri, $this->_theme);
     }
 
+    /**
+     * 头部
+     */
     public function header()
     {
         $keywords = $this->options->get('keyword');
@@ -196,6 +204,9 @@ EOF;
         $this->plugin->header();
     }
 
+    /**
+     * 脚部
+     */
     public function footer()
     {
         if ($this->enaCommentJS)
@@ -204,6 +215,9 @@ EOF;
         $this->plugin->footer();
     }
 
+    /**
+     * 评论 js
+     */
     public function commentsJS()
     {
         echo <<<EOF
@@ -283,7 +297,7 @@ EOF;
     }
 
     /**
-     * 输出cookie记忆别名
+     * 输出cookie记忆内容
      *
      * @param string $cookieName 已经记忆的cookie名称
      * @param boolean $return 是否返回
@@ -293,7 +307,7 @@ EOF;
     {
         $cookieName = strtolower($cookieName);
 
-        if (!in_array($cookieName, array('author', 'mail', 'url'))) {
+        if (!in_array($cookieName, ['author', 'mail', 'url'])) {
             return '';
         }
 
@@ -318,20 +332,20 @@ EOF;
     }
 
     /**
-     * 一是防止跨站请求伪造，二是防止重复提交
-     *
-     * @return string
+     * 显示 token 表单项
      */
-    public function _token()
-    {
-        return Token::generate();
-    }
-
     public function csrf_field()
     {
         echo '<input type="hidden" name="_token" value="' . $this->_token() . '">';
     }
 
+    /**
+     * 页面标题
+     *
+     * @param array|null $defines
+     * @param string $before
+     * @param string $end
+     */
     public function archiveTitle($defines = NULL, $before = ' &raquo; ', $end = '')
     {
         if ($this->_archiveTitle) {
@@ -342,5 +356,25 @@ EOF;
 
             echo $before . sprintf($define, $this->_archiveTitle) . $end;
         }
+    }
+
+    /**
+     * 关键词
+     *
+     * @return mixed|null
+     */
+    public function _search()
+    {
+        return $this->request->get('s');
+    }
+
+    /**
+     * 一是防止跨站请求伪造，二是防止重复提交
+     *
+     * @return string
+     */
+    public function _token()
+    {
+        return Token::generate();
     }
 }
