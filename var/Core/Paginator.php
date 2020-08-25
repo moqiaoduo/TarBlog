@@ -108,16 +108,32 @@ class Paginator implements \Iterator
         return ceil($this->total / $this->perPage);
     }
 
+    /**
+     * 是否有上一页
+     *
+     * @return bool
+     */
     public function hasPrev()
     {
         return $this->current > 1;
     }
 
+    /**
+     * 是否有下一页
+     *
+     * @return bool
+     */
     public function hasNext()
     {
         return $this->current < $this->getTotalPage();
     }
 
+    /**
+     * 自动合成query参数
+     *
+     * @param $params
+     * @return array
+     */
     private function combineParameters($params)
     {
         return array_merge(app('request')->get(), $params);
@@ -148,84 +164,98 @@ class Paginator implements \Iterator
 
         $query = URLGenerator::array2query($query_params, '?', '&');
 
-        // ------- 该段代码为调试所得，并不是用理论去推算的，如有bug请尽快指出 ------
         $total_page = $this->getTotalPage();
-        if ($total_page <= 1) return ; // 页数不足一页，没必要显示
         $curr = $this->current;
-        $pages = [];
+        if ($total_page <= 1 || $curr > $total_page || $curr < 1) return; // 页数不足一页，没必要显示
+
         $mp = $params['more_pages'];
-        $mp_2 = 2 * $mp;
 
-        if ($total_page - $curr >= $mp_2) {
-            if ($curr == 1) { // 第一页
-                for ($page = 1; $page <= $curr + $mp_2; $page++)
-                    $pages[] = $page;
-            } elseif ($curr > $mp_2) {
-                $pages = [1];
-                if ($curr - $mp >= 3)
-                    $pages[] = '-';
-                for ($page = $curr - $mp; $page <= $curr + $mp; $page++)
-                    $pages[] = $page;
-            } elseif ($curr == $mp_2) {
-                for ($page = 1; $page <= $curr + $mp; $page++)
-                    $pages[] = $page;
+        /**
+         * 思路：
+         * 1. 先生成两边，若其中一边有越界部分，先考虑移到另一边（优先保证不会越界）。
+         * 2. 再根据边缘，判断是否还可以再扩展，根据实际情况进行扩展
+         */
+        $pre_left_pages = [];
+        $pre_right_pages = [];
+
+        $left_pages = [];
+        $right_pages = [];
+
+        for ($i = $curr - $mp; $i < $curr; $i++)
+            $pre_left_pages[] = $i;
+
+        for ($i = $curr + 1; $i <= $curr + $mp; $i++)
+            $pre_right_pages[] = $i;
+
+        foreach ($pre_left_pages as $pre_left_page) {
+            if ($pre_left_page > 0) {
+                $left_pages[] = $pre_left_page;
             } else {
-                for ($page = 1; $page <= min($total_page, $mp_2 + 1); $page++)
-                    $pages[] = $page;
-            }
-
-            if ($total_page - $curr > $mp_2)
-                $pages = array_merge($pages, ['-', $total_page]);
-            elseif ($total_page > $curr)
-                $pages[] = $total_page;
-        } else {
-            if ($curr - $mp >= 3) {
-                $pages = [1, '-'];
-            } elseif ($curr > 1) {
-                for ($page = 1; $page <= min($total_page, $mp); $page++)
-                    $pages[] = $page;
-            }
-
-            if ($curr >= $total_page - $mp + 1 && $total_page - $mp_2 > 0) {
-                for ($page = max($total_page - $mp_2, 2); $page <= $total_page; $page++)
-                    $pages[] = $page;
-            } elseif ($curr - $mp > 1) {
-                for ($page = $curr - $mp; $page <= $total_page; $page++)
-                    $pages[] = $page;
-            } else {
-                for ($page = $curr; $page <= $total_page; $page++)
-                    $pages[] = $page;
+                if (count($pre_right_pages) > 0 && ($tmp_page = end($pre_right_pages)) < $total_page) {
+                    $pre_right_pages[] = $tmp_page + 1;
+                }
             }
         }
-        // ------- 该段代码为调试所得，并不是用理论去推算的，如有bug请尽快指出 ------
 
-        // 上面那么复杂的代码，都是为了下面的简洁而做出的牺牲
+        foreach ($pre_right_pages as $pre_right_page) {
+            if ($pre_right_page <= $total_page) {
+                $right_pages[] = $pre_right_page;
+            } else {
+                if (count($left_pages) > 0 && reset($left_pages) > 1) {
+                    array_unshift($left_pages, current($left_pages) - 1);
+                }
+            }
+        }
+
+        reset($left_pages);
+        end($right_pages);
+
+        if (($tmp_page = current($left_pages)) > 1) {
+            if ($tmp_page > 3) {
+                array_unshift($left_pages, '-');
+            } elseif ($tmp_page > 2) {
+                array_unshift($left_pages, 2);
+            }
+            array_unshift($left_pages, 1);
+        }
+
+        if (count($right_pages) > 0 && ($tmp_page = end($right_pages)) < $total_page) {
+            if ($tmp_page + 2 < $total_page) {
+                $right_pages[] = '-';
+            } elseif ($tmp_page + 1 < $total_page) {
+                $right_pages[] = $tmp_page + 1;
+            }
+            $right_pages[] = $total_page;
+        }
+
+        $pages = array_merge($left_pages, [$curr], $right_pages); // 最后进行合并
+
         if (is_null($custom_tpl = $params['custom_tpl'])):
-        ?>
-        <ul class="paginator">
-            <li>
-                <a href="<?php echo $curr == 1 ? 'javascript:;' : $query . $params['query_name'] . '=' . ($curr - 1) ?>">
-                    <?php echo $params['back'] ?>
-                </a>
-            </li>
-            <?php foreach ($pages as $page): ?>
-                <li<?php echo $curr == $page ? ' class="active" ' : '' ?>>
-                    <?php if ($page == '-'): ?>
-                        ...
-                    <?php elseif ($curr == $page):
-                        echo $page;
-                    else: ?>
-                        <a href="<?php echo $query . $params['query_name'] .'=' . $page ?>"><?php echo $page ?></a>
-                    <?php endif ?>
+            ?>
+            <ul class="paginator">
+                <li>
+                    <a href="<?php echo $curr == 1 ? 'javascript:;' : $query . $params['query_name'] . '=' . ($curr - 1) ?>">
+                        <?php echo $params['back'] ?>
+                    </a>
                 </li>
-            <?php endforeach ?>
-            <li>
-                <a href="<?php echo $curr == $total_page ? 'javascript:;' :
-                    $query . $params['query_name'] . '=' . ($curr + 1) ?>">
-                    <?php echo $params['forward'] ?>
-                </a>
-            </li>
-        </ul>
+                <?php foreach ($pages as $page): ?>
+                    <li<?php echo $curr == $page ? ' class="active" ' : '' ?>>
+                        <?php if ($page == '-'): ?>
+                            ...
+                        <?php elseif ($curr == $page):
+                            echo $page;
+                        else: ?>
+                            <a href="<?php echo $query . $params['query_name'] . '=' . $page ?>"><?php echo $page ?></a>
+                        <?php endif ?>
+                    </li>
+                <?php endforeach ?>
+                <li>
+                    <a href="<?php echo $curr == $total_page ? 'javascript:;' :
+                        $query . $params['query_name'] . '=' . ($curr + 1) ?>">
+                        <?php echo $params['forward'] ?>
+                    </a>
+                </li>
+            </ul>
         <?php else:
             include __ROOT_DIR__ . '/' . $custom_tpl;
         endif;
