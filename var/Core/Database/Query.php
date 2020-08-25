@@ -696,12 +696,14 @@ class Query
     /**
      * 设置limit
      *
-     * @param $limit
+     * @param int $limit
      * @return $this
      */
     public function limit($limit)
     {
-        $this->query['limit'] = $limit;
+        if ($limit < 0) $limit = 0;
+
+        $this->query['limit'] = $limit; // 防止出现负数
 
         return $this;
     }
@@ -709,11 +711,13 @@ class Query
     /**
      * 设置offset
      *
-     * @param $offset
+     * @param int $offset
      * @return $this
      */
     public function offset($offset)
     {
+        if ($offset < 0) $offset = 0; // 防止出现负数
+
         $this->query['offset'] = $offset;
 
         return $this;
@@ -1024,6 +1028,8 @@ class Query
      */
     public function page($page, $perPage)
     {
+        if ($page < 1) $page = 1; // 防止因为页数问题挂掉
+
         $offset = ($page - 1) * $perPage;
         $this->offset($offset);
         $this->limit($perPage);
