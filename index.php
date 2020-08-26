@@ -14,6 +14,8 @@ if (!defined('__ROOT_DIR__') && !@include_once 'config.inc.php') {
 
 require __ROOT_DIR__ . '/var/routes.php';
 
+$app->bidingInstance('plugin', new \Core\Plugin\Manager()); // 提前初始化插件，使插件可以参与定义路由
+
 $app->make('router')->refreshRoutesNameList();
 
 ob_start();
