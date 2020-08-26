@@ -37,7 +37,7 @@ $comments_num = DB::table('comments')->where('status', 'approved')->where(functi
 $pending_comments_num = DB::table('comments')->where('ownerId', Auth::id())
     ->where('status', 'pending')->count();
 
-$official_logs = json_encode(\Utils\Curl::get('https://tarblog.cn/logs'));
+$official_logs = json_decode(\Utils\Curl::get('https://tarblog.cn/logs'), true);
 ?>
 <style>
     @media screen and (max-width: 768px) {
