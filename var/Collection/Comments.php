@@ -72,14 +72,18 @@ class Comments extends DataContainer
     /**
      * 构造函数，需传入文章/页面模型
      *
-     * @param Content $model
+     * @param Content|null $model
      */
-    public function __construct($model)
+    public function __construct($model = null)
     {
-        $this->content = $model;
+        if (is_null($model)) {
+            $this->comments = [];
+        } else {
+            $this->content = $model;
 
-        $this->comments = $this->content->getTopLevelCommentPaginate(app('request')->get('page') ?:
-            get_option('commentsPageDisplay', 'first'), get_option('commentsPageSize'));
+            $this->comments = $this->content->getTopLevelCommentPaginate(app('request')->get('page') ?:
+                get_option('commentsPageDisplay', 'first'), get_option('commentsPageSize'));
+        }
 
         if ($this->comments instanceof Paginator)
             $this->setQueue($this->comments->getData());
