@@ -53,6 +53,8 @@ $official_logs = json_encode(\Utils\Curl::get('https://tarblog.cn/logs'));
     }
     .panel-body {
         padding: 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
         background-color: #eee;
         border-bottom: 1px solid #aaa;
     }
