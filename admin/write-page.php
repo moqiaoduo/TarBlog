@@ -99,8 +99,17 @@ Common::loadArticleCss();
                    style="font-weight: bold;"
                    autocomplete="off" value="<?php echo $title ?>">
         </div>
-        <div class="form-group url-slug mono">
-            <?php echo route('page', ['slug' => Common::slugInput($slug), 'cid' => $show_cid]) ?>
+        <div class="form-group">
+            <span class="url-slug mono">
+                <?php echo route('page', ['slug' => Common::slugInput($slug), 'cid' => $show_cid]) ?>
+            </span>
+            <?php if (isset($page)): ?>
+                <a href="<?php echo route('page', \Utils\Route::fillPageParams($page)) ?>" target="_blank">
+                    <i class="czs-out-l"></i>
+                    新窗口打开
+                </a>
+                <a href="./preview.php?id=<?php echo $page->cid?>" target="_blank"><i class="czs-tv-l"></i> 预览</a>
+            <?php endif ?>
         </div>
         <div class="form-group">
             <?php

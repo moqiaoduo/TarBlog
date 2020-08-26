@@ -112,9 +112,18 @@ Common::loadArticleCss();
                        style="font-weight: bold;"
                        autocomplete="off" value="<?php echo $title ?>">
             </div>
-            <div class="form-group url-slug mono">
-                <?php echo route('post', ['slug' => Common::slugInput($slug), 'cid' => $show_cid] +
-                    (isset($post) && ($cate = $post->getFirstCategory()) ? ['category' => $cate->slug] : [])) ?>
+            <div class="form-group">
+                <span class="url-slug mono">
+                    <?php echo route('post', ['slug' => Common::slugInput($slug), 'cid' => $show_cid] +
+                        (isset($post) && ($cate = $post->getFirstCategory()) ? ['category' => $cate->slug] : [])) ?>
+                </span>
+                <?php if (isset($post)): ?>
+                <a href="<?php echo route('post', \Utils\Route::fillPostParams($post)) ?>" target="_blank">
+                    <i class="czs-out-l"></i>
+                    新窗口打开
+                </a>
+                    <a href="./preview.php?id=<?php echo $post->cid?>" target="_blank"><i class="czs-tv-l"></i> 预览</a>
+                <?php endif ?>
             </div>
             <div class="form-group">
                 <?php
