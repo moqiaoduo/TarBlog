@@ -181,7 +181,7 @@ $official_logs = json_encode(\Utils\Curl::get('https://tarblog.cn/logs'));
     <div>
         <h3>官方动态</h3>
         <ul class="list">
-            <?php if (is_array($official_logs)):
+            <?php if (is_array($official_logs) && count($official_logs) > 0):
                 foreach ($official_logs as $log): ?>
                     <li>
                         <span><?php echo dateX('d/M', $log['date']) ?></span>
