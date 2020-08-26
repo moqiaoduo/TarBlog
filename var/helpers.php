@@ -53,15 +53,18 @@ if (!function_exists('dateX')) {
         if (is_null($time)) $time = time();
 
         // 预置格式
-        switch ($format) {
-            case 0:
-                $format = 'Y-m-d H:i:s';
-                break;
-            case 1:
-                $format = 'Y-m-d H:i';
-                break;
-            case 2:
-                $format = 'Y-m-d';
+        if (is_numeric($format)) {
+            switch ($format) {
+                case 0:
+                    $format = 'Y-m-d H:i:s';
+                    break;
+                case 1:
+                    $format = 'Y-m-d H:i';
+                    break;
+                case 2:
+                    $format = 'Y-m-d';
+                    break;
+            }
         }
 
         if (is_int($time))
