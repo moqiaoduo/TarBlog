@@ -112,7 +112,7 @@ class Auth
     {
         return [
             //访问仪表盘
-            'dashboard' => ['admin', 'editor', 'writer', 'poster', 'reader'],
+            'dashboard' => ['admin', 'editor', 'writer', 'poster'],
             //基本的写作功能，只能查看、编辑和删除自己的文章，
             //是否自动变为投稿状态取决于程序设定，无法自行设定文章状态和开关评论
             //当然标签是可以自己选的
