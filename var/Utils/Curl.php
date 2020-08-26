@@ -35,10 +35,11 @@ class Curl
 
         curl_close($curl);
 
+
         return $data;
     }
 
-    public function post($url, $data = [], $headers = [])
+    public static function post($url, $data = [], $headers = [])
     {
         $ch = curl_init();
 
