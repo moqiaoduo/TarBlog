@@ -57,7 +57,7 @@ class Update extends NoRender
         if (!empty($post['password']))
             $user->password = password_hash($post['password'], PASSWORD_DEFAULT);
         $user->url = $post['url'];
-        if (!empty($post['identity']))
+        if (!empty($post['identity']) && Auth::check('admin-level', false))
             $user->identity = $post['identity'];
 
         DB::saveWithModel('users', $user, 'id', true);
