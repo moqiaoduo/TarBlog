@@ -165,9 +165,12 @@ class Router
 
         foreach ($params as $param) {
             $optional = substr($param, 0, 1) == '?';
-            $pattern = $optional ? '.*?' : '.+?';
+            if ($route->isMultiDivParam($param))
+                $pattern = '.*';
+            else
+                $pattern = $optional ? '.*?' : '.+?';
             if ($optional)
-                $all_pattern = str_replace('/{' . $param . '}', '/?(' . $pattern . ')', $all_pattern);
+                $all_pattern = str_replace('/{' . $param . '}', '\/?(' . $pattern . ')', $all_pattern);
             $all_pattern = str_replace('{' . $param . '}', '(' . $pattern . ')', $all_pattern);
         }
 
@@ -190,7 +193,7 @@ class Router
             }
 
             // 假如匹配到的参数中间有/，但是不是多级目录{directory}的话，理应为不匹配的路由
-            if (strpos($matches[$i], "/") !== false && !$isMultiDivParam) return false;
+            if (is_array($matches[$i]) && !$isMultiDivParam) return false;
 
         }
 

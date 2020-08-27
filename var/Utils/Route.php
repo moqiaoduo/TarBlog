@@ -80,7 +80,7 @@ class Route extends Facade
         return $data;
     }
 
-    public static function getCategoryDirectory(Category $category)
+    public static function getCategoryDirectory(?Category $category)
     {
         $uri = '';
 
@@ -88,7 +88,7 @@ class Route extends Facade
 
         $current = $category;
 
-        while ($current->parent > 0) {
+        while ($current && $current->parent > 0) {
             $parent_category = DB::table('metas')->where('type', 'category')
                 ->where('mid', $current->parent)->firstWithModel(Category::class);
             if (is_null($parent_category)) break;
@@ -129,7 +129,7 @@ class Route extends Facade
     {
         $last_cate = null;
         $cate = null;
-        foreach ($directories as $directory) {
+        foreach (Arr::wrap($directories) as $directory) {
             $cate = DB::table('metas')->where('type', 'category')
                 ->where('slug', $directory)->first();
             if (is_null($cate)) return false;

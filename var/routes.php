@@ -24,8 +24,9 @@ if ($indexPage > 0) {
 
 Route::add($category_url = $options->categoryUrl, 'App\Archive\Category')->name('category');
 
-Route::add($post_url = $options->postUrl, 'App\Article\Post')->name('post')->where(['cid' => '{cid}', 'year' => Route::YEAR_PATTERN,
-    'month' => Route::MONTH_DAY_PATTERN, 'day' => Route::MONTH_DAY_PATTERN]);
+Route::add($post_url = $options->postUrl, 'App\Article\Post')->name('post')->where(['cid' => '{cid}',
+    'year' => Route::YEAR_PATTERN, 'month' => Route::MONTH_DAY_PATTERN, 'day' => Route::MONTH_DAY_PATTERN])
+    ->multiDiv('directory');
 
 Route::add($post_url . '/comment', 'App\Comment')->name('post.comment');
 

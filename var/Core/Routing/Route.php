@@ -165,8 +165,16 @@ class Route
         return in_array($param, $this->multiDivParams);
     }
 
+    /**
+     * 设置正则
+     *
+     * @param $params
+     * @return $this
+     */
     public function where($params)
     {
         $this->wheres = array_merge($this->wheres, $params);
+
+        return $this;
     }
 }
