@@ -6,6 +6,7 @@
  *
  * @var \Core\Errors $errors
  * @var \Core\Http\Request $request
+ * @var \Core\Http\Session $session
  */
 
 use Helper\Common;
@@ -18,7 +19,7 @@ require "init.php";
 Common::setTitle('用户个人资料');
 
 $uid = $request->get('id', Auth::id());
-if ($uid <= 0) back();
+if ($uid <= 0) to_homepage(); // 为了防止反复横跳，所以跳转到首页算了
 if ($uid != Auth::id()) Auth::check('admin-level');
 
 $user = DB::table('users')->where('id', $uid)->first();
@@ -98,7 +99,8 @@ Common::loadErrorAlert($errors->first());
                 用户的个人主页地址, 请用 http://(或https://) 开头.
             </div>
         </div>
-        <?php if (Auth::check('admin-level', false)): // 非管理员不能修改 ?>
+        <?php if (Auth::check('admin-level', false) && $user['id'] != Auth::id()):
+            // 非管理员以及自己不能修改 ?>
         <div class="form-group">
             <div class="form-inline">
                 <label class="form-label" for="identity">用户组</label>
@@ -108,6 +110,17 @@ Common::loadErrorAlert($errors->first());
             </div>
         </div>
         <?php endif ?>
+        <div class="form-group">
+            <div class="form-inline">
+                <label class="form-label" for="url">登出其他设备</label>
+                <div style="height: 38px;padding-top: 4px;">
+                    <a href="do.php?a=Admin/Logout&other=1" class="btn btn-sm">登出</a>
+                </div>
+            </div>
+            <div class="form-description">
+                点击按钮后，除当前登录设备外的设备将会被强制登出。
+            </div>
+        </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary">保存</button>
             <button type="reset" class="btn">重置</button>
