@@ -267,7 +267,7 @@ SQL
 
                 $options->set('postUrl', '/archives/{cid}');
                 $options->set('pageUrl', '/{slug}');
-                $options->set('categoryUrl', '/{slug}');
+                $options->set('categoryUrl', '/category/{slug}');
                 $options->set('showArticleList', 1);
                 $options->set('articleListUrl', '/article');
 
