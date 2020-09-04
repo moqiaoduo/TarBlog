@@ -10,7 +10,7 @@
 namespace Core;
 
 use Core\Database\Manager as Database;
-use Core\Options;
+use Helper\HTMLPurifier;
 use Utils\DB;
 
 /**
@@ -29,7 +29,7 @@ class Upgrade
      * @param Database $db
      * @param Options $options
      */
-    public static function v0_2_2_to_v0_3_0($db, $options)
+    public static function v0_2_2_to_v0_3_0(Database $db, Options $options)
     {
         $db->exec('ALTER TABLE `users` CHANGE COLUMN `remember_token` `auth_token` ' .
             'VARCHAR(100) NULL DEFAULT NULL AFTER `identity`'); // users表字段remember_token改为auth_token
@@ -62,5 +62,41 @@ class Upgrade
         }
     }
 
-    public static $newest_version = 'v0.3.0';
+    /**
+     * 从0.3.0升级到0.3.2
+     *
+     * @param Database $db
+     * @param Options $options
+     */
+    public static function v0_3_0_to_v0_3_2(Database $db, Options $options)
+    {
+        // 新增默认设置
+        $options->set('html_purifier_auto_empty_clean', 1);
+        $options->set('html_purifier_cache', 0);
+        $options->set('html_purifier_article', 0);
+        $options->set('html_purifier_article_allow_html',
+            'div,b,strong,i,em,u,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]');
+        $options->set('html_purifier_article_allow_css',
+            'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align');
+        $options->set('html_purifier_article_auto_para', 0);
+        $options->set('html_purifier_comment_allow_html',
+            'div,b,strong,i,em,u,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]');
+        $options->set('html_purifier_comment_allow_css',
+            'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align');
+        $options->set('html_purifier_comment_auto_para', 1);
+
+        HTMLPurifier::load();
+
+        HTMLPurifier::config(['HTML.Allowed' => $options->get('html_purifier_comment_allow_html'),
+            'CSS.AllowedProperties' => $options->get('html_purifier_comment_allow_css'),
+            'AutoFormat.AutoParagraph' => $options->get('html_purifier_comment_auto_para') == 1]);
+
+        // 过滤所有评论
+        foreach ($db->table('comments')->get() as $comment) {
+            $db->table('comments')->where('id', $comment['id'])
+                ->update(['content' => HTMLPurifier::clean($comment['content'])]);
+        }
+    }
+
+    public static $newest_version = 'v0.3.2';
 }
