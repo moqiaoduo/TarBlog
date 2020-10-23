@@ -83,9 +83,9 @@ class Save extends NoRender
                     $this->db->table('contents')->insert(
                         ['parent' => $cid, 'type' => 'post_draft'] + $base_data); // 创建草稿
                 }
-            } elseif ($p['type'] == 'post') {
+            } elseif ($p['type'] == 'post' || $post->type == 'post_draft') {
                 $this->db->table('contents')->where('parent', $cid)
-                    ->where('type', 'post_draft')->delete();
+                    ->where('type', 'post_draft')->delete(); // 这个地方可以保证旧版本的草稿会被删除
                 $post->type = 'post';
                 $post->title = $title;
                 $post->content = $content;
@@ -110,7 +110,7 @@ class Save extends NoRender
 
         if ($cid == 0) Content::saveContent($post);
 
-        $post->slug = Content::slug($p, 'page', $this->plugin, $post);
+        $post->slug = Content::slug($p, 'post', $this->plugin, $post);
 
         Content::saveContent($post, true);
 
