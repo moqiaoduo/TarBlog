@@ -79,7 +79,7 @@ class Save extends NoRender
                     $this->db->table('contents')->insert(
                         ['parent' => $cid, 'type' => 'page_draft'] + $base_data); // 创建草稿
                 }
-            } elseif ($p['type'] == 'page') {
+            } elseif ($p['type'] == 'page' || $post->type == 'page_draft') {
                 $this->db->table('contents')->where('parent', $cid)
                     ->where('type', 'page_draft')->delete();
                 $page->type = 'page';
