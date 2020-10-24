@@ -86,7 +86,7 @@ class Save extends NoRender
             } elseif ($p['type'] == 'post' || $post->type == 'post_draft') {
                 $this->db->table('contents')->where('parent', $cid)
                     ->where('type', 'post_draft')->delete(); // 这个地方可以保证旧版本的草稿会被删除
-                $post->type = 'post';
+                $post->type = $p['type'];
                 $post->title = $title;
                 $post->content = $content;
                 $post->updated_at = dateX();

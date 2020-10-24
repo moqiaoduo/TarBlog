@@ -82,7 +82,7 @@ class Save extends NoRender
             } elseif ($p['type'] == 'page' || $post->type == 'page_draft') {
                 $this->db->table('contents')->where('parent', $cid)
                     ->where('type', 'page_draft')->delete();
-                $page->type = 'page';
+                $page->type = $p['type'];
                 $page->title = $title;
                 $page->content = $content;
                 $page->updated_at = dateX();
