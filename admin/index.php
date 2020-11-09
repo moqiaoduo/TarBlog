@@ -21,14 +21,14 @@ include "header.php";
 if (!Auth::check('dashboard', false))
     redirect(siteUrl(__ADMIN_DIR__ . 'user-editor.php'));
 
-$recent_articles = DB::table('contents')->where('type', 'post')
-    ->where('uid', Auth::id())->orderByDesc('created_at')->limit(10)->get();
+$recent_articles = DB::table('contents')->where('type', 'post')->where('uid', Auth::id())
+    ->where('status', 'publish')->orderByDesc('created_at')->limit(10)->get();
 
-$recent_comments = DB::table('comments')->where('ownerId', Auth::id())
-    ->orderByDesc('created_at')->limit(10)->get();
+$recent_comments = DB::table('comments')->where('status', 'approved')
+    ->where('ownerId', Auth::id())->orderByDesc('created_at')->limit(10)->get();
 
-$articles_num = DB::table('contents')->where('type', 'post')
-    ->where('uid', Auth::id())->count();
+$articles_num = DB::table('contents')->where('type', 'post')->where('uid', Auth::id())
+    ->where('status', 'publish')->count();
 
 $comments_num = DB::table('comments')->where('status', 'approved')->where(function ($query) {
     $query->where('ownerId', Auth::id())->orWhere('authorId', Auth::id());
