@@ -160,7 +160,7 @@ Common::loadErrorAlert($errors->first());
                                         new Post($article))) . '" target="_blank">' . $article['title'] . '</a>';
                             }
                             ?></p>
-                        <p class="comment-content"><?php echo nl2br(htmlspecialchars($val['content'])) ?></p>
+                        <p class="comment-content"><?php echo $val['content'] ?></p>
                         <p>
                             <?php generate_select_link($id, $status); ?>
                             <a href="javascript:;" data-function="edit">编辑</a>
