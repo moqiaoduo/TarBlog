@@ -29,7 +29,9 @@ class Destroy extends NoRender
         // 这里相比回收精简了一点
         $ids = $this->db->table('contents')->whereIn('cid', $ids)->when(!$isAdmin, function ($query) {
             $query->where('uid', Auth::id()); // 不是管理员无法删除其他用户的文章
-        })->whereNotNull('deleted_at')->where('type', 'post')->pluck('cid');
+        })->whereNotNull('deleted_at')->where(function ($query) {
+            $query->where('type', 'post')->orWhere('type', 'post_draft');
+        })->pluck('cid');
 
         DB::beginTransaction();
 
