@@ -12,6 +12,7 @@ use Utils\Arr;
 
 /**
  * 目前仅支持构造MySQL语句
+ * 下一版本将做迁移
  */
 class Query
 {
@@ -71,6 +72,13 @@ class Query
      * @var array
      */
     protected $allow_actions = ['select', 'insert', 'update', 'delete'];
+
+    /**
+     * 无条件标识
+     *
+     * @var bool
+     */
+    protected $noWhere = true;
 
     /**
      * 解析后的参数
@@ -193,11 +201,28 @@ class Query
         return $this;
     }
 
+    /**
+     * or逻辑的where语句
+     *
+     * @param mixed $column
+     * @param mixed|null $operator
+     * @param mixed|null $value
+     * @return $this
+     */
     public function orWhere($column, $operator = null, $value = null)
     {
         return $this->where($column, $operator, $value, 'or');
     }
 
+    /**
+     * where in 语句
+     *
+     * @param mixed $column
+     * @param array $values
+     * @param bool $not
+     * @param string $logic
+     * @return $this
+     */
     public function whereIn($column, $values, $not = false, $logic = 'and')
     {
         $this->addQuery('where', [
@@ -211,21 +236,51 @@ class Query
         return $this;
     }
 
+    /**
+     * where not in 语句
+     *
+     * @param mixed $column
+     * @param array $values
+     * @param string $logic
+     * @return $this
+     */
     public function whereNotIn($column, $values, $logic = 'and')
     {
         return $this->whereIn($column, $values, true, $logic);
     }
 
+    /**
+     * or逻辑where in语句
+     *
+     * @param mixed $column
+     * @param array $values
+     * @param bool $not
+     * @return $this
+     */
     public function orWhereIn($column, $values, $not = false)
     {
         return $this->whereIn($column, $values, $not, 'or');
     }
 
+    /**
+     * or逻辑where not in 语句
+     *
+     * @param mixed $column
+     * @param array $values
+     * @return $this
+     */
     public function orWhereNotIn($column, $values)
     {
         return $this->whereIn($column, $values, true, 'or');
     }
 
+    /**
+     * where exists 子句
+     *
+     * @param callable $callback
+     * @param string $logic
+     * @return bool
+     */
     public function whereExists($callback, $logic = 'and')
     {
         $query = new static($this->manager, $this->table, $this->table_as);
@@ -241,11 +296,25 @@ class Query
         return true;
     }
 
+    /**
+     * or逻辑where exists 子句
+     *
+     * @param callable $callback
+     * @return bool
+     */
     public function orWhereExists($callback)
     {
         return $this->whereExists($callback, 'or');
     }
 
+    /**
+     * where范围语句
+     *
+     * @param mixed $column
+     * @param array $values
+     * @param string $logic
+     * @return $this
+     */
     public function whereBetween($column, $values, $logic = 'and')
     {
         if (!is_array($values) || count($values) !== 2)
@@ -261,11 +330,26 @@ class Query
         return $this;
     }
 
+    /**
+     * or逻辑where范围语句
+     *
+     * @param mixed $column
+     * @param array $values
+     * @return $this
+     */
     public function orWhereBetween($column, $values)
     {
         return $this->whereBetween($column, $values, 'or');
     }
 
+    /**
+     * where null 语句
+     *
+     * @param mixed $column
+     * @param bool $not
+     * @param string $logic
+     * @return $this
+     */
     public function whereNull($column, $not = false, $logic = 'and')
     {
         $this->addQuery('where', [
@@ -278,21 +362,49 @@ class Query
         return $this;
     }
 
+    /**
+     * or逻辑where null 语句
+     *
+     * @param mixed $column
+     * @param bool $not
+     * @return $this
+     */
     public function orWhereNull($column, $not = false)
     {
         return $this->whereNull($column, $not, 'or');
     }
 
+    /**
+     * where is not null 语句
+     *
+     * @param mixed $column
+     * @param string $logic
+     * @return $this
+     */
     public function whereNotNull($column, $logic = 'and')
     {
         return $this->whereNull($column, true, $logic);
     }
 
+    /**
+     * or逻辑where is not null 语句
+     *
+     * @param mixed $column
+     * @return $this
+     */
     public function orWhereNotNull($column)
     {
         return $this->whereNull($column, true, 'or');
     }
 
+    /**
+     * 原生where语句
+     *
+     * @param mixed $expression
+     * @param array $binds
+     * @param string $logic
+     * @return $this
+     */
     public function whereRaw($expression, $binds = [], $logic = 'and')
     {
         $this->addQuery('where', [
@@ -305,6 +417,13 @@ class Query
         return $this;
     }
 
+    /**
+     * or逻辑原生where语句
+     *
+     * @param mixed $expression
+     * @param array $binds
+     * @return $this
+     */
     public function orWhereRaw($expression, $binds = [])
     {
         return $this->whereRaw($expression, $binds);
@@ -313,8 +432,8 @@ class Query
     /**
      * 条件成立时，将加入查询
      *
-     * @param $condition
-     * @param $callable
+     * @param bool $condition
+     * @param callable $callable
      * @param boolean $prt 在外面加括号
      * @param string $logic 该项只有在外面加括号才会应用
      * @return $this
@@ -354,6 +473,12 @@ class Query
         $this->action = $action;
     }
 
+    /**
+     * 修改select语句
+     *
+     * @param array $columns
+     * @return $this
+     */
     public function select($columns = ['*'])
     {
         $this->query['select'] = [];
@@ -367,6 +492,12 @@ class Query
         return $this;
     }
 
+    /**
+     * 添加select
+     *
+     * @param mixed $column
+     * @return $this
+     */
     public function addSelect($column)
     {
         $columns = is_array($column) ? $column : func_get_args();
@@ -378,6 +509,12 @@ class Query
         return $this;
     }
 
+    /**
+     * 添加原生select语句
+     *
+     * @param mixed $expression
+     * @return $this
+     */
     public function selectRaw($expression)
     {
         $this->addSelect(new Raw($expression));
@@ -459,6 +596,13 @@ class Query
         return $sql;
     }
 
+    /**
+     * order by 语句
+     *
+     * @param mixed $column
+     * @param string $sort
+     * @return $this
+     */
     public function orderBy($column, $sort = 'asc')
     {
         if ($column instanceof Raw) {
@@ -474,6 +618,13 @@ class Query
         return $this;
     }
 
+    /**
+     * 原生order by 语句
+     *
+     * @param mixed $expression
+     * @param array $bindings
+     * @return $thisu
+     */
     public function orderByRaw($expression, $bindings = [])
     {
         $this->addQuery('order', [
@@ -485,6 +636,12 @@ class Query
         return $this;
     }
 
+    /**
+     * order by desc语句
+     *
+     * @param mixed $column
+     * @return $this
+     */
     public function orderByDesc($column)
     {
         return $this->orderBy($column, 'desc');
@@ -521,6 +678,11 @@ class Query
         return $sql;
     }
 
+    /**
+     * group by 子句
+     *
+     * @param mixed $columns
+     */
     public function groupBy($columns)
     {
         foreach (Arr::wrap($columns) as $column) {
@@ -545,6 +707,15 @@ class Query
         return $sql;
     }
 
+    /**
+     * having子句
+     *
+     * @param mixed $column
+     * @param mixed|null $operator
+     * @param mixed|null $value
+     * @param string $logic
+     * @return $this
+     */
     public function having($column, $operator = null, $value = null, $logic = 'and')
     {
         if ($column instanceof Raw) {
@@ -583,11 +754,27 @@ class Query
         return $this;
     }
 
+    /**
+     * or逻辑having子句
+     *
+     * @param mixed $column
+     * @param mixed|null $operator
+     * @param mixed|null $value
+     * @return $this
+     */
     public function orHaving($column, $operator = null, $value = null)
     {
         return $this->having($column, $operator, $value);
     }
 
+    /**
+     * having is null 子句
+     *
+     * @param mixed $column
+     * @param bool $not
+     * @param string $logic
+     * @return $this
+     */
     public function havingNull($column, $not = false, $logic = 'and')
     {
         $this->addQuery('having', [
@@ -600,21 +787,49 @@ class Query
         return $this;
     }
 
+    /**
+     * or逻辑having is null 子句
+     *
+     * @param mixed $column
+     * @param bool $not
+     * @return $this
+     */
     public function orHavingNull($column, $not = false)
     {
         return $this->havingNull($column, $not, 'or');
     }
 
+    /**
+     * having is not null 子句
+     *
+     * @param mixed $column
+     * @param string $logic
+     * @return $this
+     */
     public function havingNotNull($column, $logic = 'and')
     {
         return $this->havingNull($column, true, $logic);
     }
 
+    /**
+     * or逻辑having is not null 子句
+     *
+     * @param mixed $column
+     * @return $this
+     */
     public function orHavingNotNull($column)
     {
         return $this->havingNull($column, true, 'or');
     }
 
+    /**
+     * having 范围语句
+     *
+     * @param mixed $column
+     * @param array $values
+     * @param string $logic
+     * @return $this
+     */
     public function havingBetween($column, $values, $logic = 'and')
     {
         if (!is_array($values) || count($values) !== 2)
@@ -630,11 +845,26 @@ class Query
         return $this;
     }
 
+    /**
+     * or逻辑having 范围语句
+     *
+     * @param mixed $column
+     * @param array $values
+     * @return $this
+     */
     public function orHavingBetween($column, $values)
     {
         return $this->havingBetween($column, $values, 'or');
     }
 
+    /**
+     * 原生having子句
+     *
+     * @param string $expression
+     * @param array $binds
+     * @param string $logic
+     * @return $this
+     */
     public function havingRaw($expression, $binds = [], $logic = 'and')
     {
         $this->addQuery('having', [
@@ -647,6 +877,13 @@ class Query
         return $this;
     }
 
+    /**
+     * or逻辑原生having子句
+     *
+     * @param string $expression
+     * @param array $binds
+     * @return $this
+     */
     public function orHavingRaw($expression, $binds = [])
     {
         return $this->havingRaw($expression, $binds);
@@ -754,6 +991,7 @@ class Query
                 $having = $this->buildHavingSql();
                 $order = $this->buildOrderSql();
                 $limit = $this->buildLimitSql();
+                $this->noWhere = empty(trim($where));
                 $whereSql = $where ? ' where ' . $where : '';
                 $groupSql = $group ? ' group by ' . $group : '';
                 $havingSql = $having ? ' having ' . $having : '';
@@ -777,6 +1015,7 @@ class Query
                 $where = $this->buildWhereSql();
                 $order = $this->buildOrderSql();
                 $limit = $this->buildLimitSql();
+                $this->noWhere = empty(trim($where));
                 $whereSql = $where ? ' where ' . $where : '';
                 $orderSql = $order ? ' order by ' . $order : '';
                 $limitSql = $limit ? ' limit ' . $limit : '';
@@ -786,6 +1025,7 @@ class Query
                 $where = $this->buildWhereSql();
                 $order = $this->buildOrderSql();
                 $limit = $this->buildLimitSql();
+                $this->noWhere = empty(trim($where));
                 $whereSql = $where ? ' where ' . $where : '';
                 $orderSql = $order ? ' order by ' . $order : '';
                 $limitSql = $limit ? ' limit ' . $limit : '';
@@ -798,7 +1038,7 @@ class Query
     }
 
     /**
-     * 取记录
+     * 取所有记录
      *
      * @return mixed|null
      */
@@ -921,9 +1161,10 @@ class Query
      *
      * @param array $data
      * @param bool $returnRowCount 是否返回影响行数
+     * @param bool $force 是否强制更新（即使没有条件）
      * @return bool|int
      */
-    public function update(array $data, $returnRowCount = false)
+    public function update(array $data, $returnRowCount = false, $force = false)
     {
         $this->switchAction('update');
 
@@ -932,6 +1173,8 @@ class Query
         $values = array_values($data);
 
         $sql = $this->toSql($columns);
+
+        if ($this->noWhere && !$force) return false;
 
         $params = array_merge($values, $this->parsed_parameters);
 
@@ -942,13 +1185,16 @@ class Query
      * 删除数据
      *
      * @param bool $returnRowCount 是否返回影响行数
+     * @param bool $force 是否强制更新（即使没有条件）
      * @return bool|int
      */
-    public function delete($returnRowCount = false)
+    public function delete($returnRowCount = false, $force = false)
     {
         $this->switchAction('delete');
 
         $sql = $this->toSql();
+
+        if ($this->noWhere && !$force) return false;
 
         return $this->manager->exec($sql, $this->parsed_parameters, $returnRowCount);
     }
@@ -956,7 +1202,7 @@ class Query
     /**
      * 字段求和
      *
-     * @param $column
+     * @param string $column
      * @return mixed
      */
     public function sum($column)
@@ -970,6 +1216,12 @@ class Query
         return $this->manager->query($sql, $this->parsed_parameters, true)['sum'];
     }
 
+    /**
+     * max函数
+     *
+     * @param string $column
+     * @return mixed
+     */
     public function max($column)
     {
         $this->switchAction('select');
@@ -981,6 +1233,12 @@ class Query
         return $this->manager->query($sql, $this->parsed_parameters, true)['max'];
     }
 
+    /**
+     * min函数
+     *
+     * @param string $column
+     * @return mixed
+     */
     public function min($column)
     {
         $this->switchAction('select');
