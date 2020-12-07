@@ -7,11 +7,9 @@
 
 namespace Core\Database;
 
+use Core\Database\Adapter\SQLBuildAdapter;
 use PDO;
 
-/**
- * 目前仅支持MySQL
- */
 class Manager
 {
     /**
@@ -36,6 +34,23 @@ class Manager
     protected $prefix;
 
     /**
+     * SQL构建适配器
+     * 默认为MySQL
+     *
+     * @var SQLBuildAdapter
+     */
+    protected $adapter;
+
+    /**
+     * 支持的驱动对应适配列表
+     *
+     * @var array
+     */
+    protected $d2a = [
+        'mysql' => 'Core\Database\Adapter\MySQLAdapter'
+    ];
+
+    /**
      * 初始化数据库对象
      *
      * @param array $configs
@@ -52,6 +67,7 @@ class Manager
 
     public function init()
     {
+        $driver = $this->configs['driver'] ?? 'mysql';
         $host = $this->configs['host'] ?? '127.0.0.1';
         $port = $this->configs['port'] ?? '3306';
         $user = $this->configs['user'] ?? 'root';
@@ -61,13 +77,18 @@ class Manager
         $this->prefix = $this->configs['prefix'] ?? '';
 
         $this->pdo = new PDO(
-            "mysql:dbname=$dbname;host=$host;port=$port;charset=$charset",
+            "$driver:dbname=$dbname;host=$host;port=$port;charset=$charset",
             $user,
             $password,
             array(PDO::ATTR_PERSISTENT => true,
                 PDO::ATTR_TIMEOUT => 5));
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
+        $adapter = $this->d2a[$driver];
+
+        if (class_exists($adapter))
+            $this->adapter = new $adapter;
     }
 
     public function transaction($callback)
@@ -167,5 +188,13 @@ class Manager
     public function setPdo(PDO $pdo)
     {
         $this->pdo = $pdo;
+    }
+
+    /**
+     * @return SQLBuildAdapter
+     */
+    public function getAdapter(): SQLBuildAdapter
+    {
+        return $this->adapter;
     }
 }
