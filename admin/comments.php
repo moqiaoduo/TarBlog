@@ -95,6 +95,21 @@ Common::loadErrorAlert($errors->first());
                     </option>
                 <?php endforeach; ?>
             </select>
+            <div class="btn-group">
+                <?php if ($status !== 'approved'): ?>
+                <button class="btn btn-success btn-sm" type="button" id="comment-approve">
+                    设为通过
+                </button>
+                <?php endif;if ($status !== 'pending'): ?>
+                <button class="btn btn-info btn-sm" type="button" id="comment-pending">
+                    设为待审核
+                </button>
+                <?php endif;if ($status !== 'spam'): ?>
+                <button class="btn btn-warning btn-sm" type="button" id="comment-spam">
+                    设为垃圾
+                </button>
+                <?php endif ?>
+            </div>
         </div>
         <div>
             <?php if (Auth::check('post-premium', false)): ?>
@@ -185,4 +200,7 @@ Common::loadErrorAlert($errors->first());
 Common::addJSFile('assets/js/comment.js');
 Common::selectAllJS();
 Common::buttonPostJS('Admin/Comment/Delete', 'comment-remove');
+Common::buttonPostJS('Admin/Comment/ApproveBatch', 'comment-approve');
+Common::buttonPostJS('Admin/Comment/PendBatch', 'comment-pending');
+Common::buttonPostJS('Admin/Comment/BanBatch', 'comment-spam');
 include "footer.php" ?>
