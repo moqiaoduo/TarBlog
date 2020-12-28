@@ -10,6 +10,13 @@ use Core\Container\Manager as App;
 use Utils\URLGenerator;
 
 if (!function_exists('app')) {
+    /**
+     * 调用App(Container Manager)
+     *
+     * @param mixed|null $name
+     * @param mixed ...$params
+     * @return App|mixed|null
+     */
     function app($name = null, ...$params)
     {
         if (is_null($name))
@@ -20,6 +27,14 @@ if (!function_exists('app')) {
 }
 
 if (!function_exists('get_option')) {
+    /**
+     * 获取option
+     *
+     * @param $key
+     * @param null $default
+     * @param int $uid
+     * @return mixed
+     */
     function get_option($key, $default = null, $uid = 0)
     {
         return app('options')->get($key, $default, $uid);
@@ -27,6 +42,13 @@ if (!function_exists('get_option')) {
 }
 
 if (!function_exists('set_option')) {
+    /**
+     * 设置option
+     *
+     * @param $key
+     * @param $value
+     * @param int $uid
+     */
     function set_option($key, $value, $uid = 0)
     {
         app('options')->set($key, $value, $uid);
@@ -34,6 +56,13 @@ if (!function_exists('set_option')) {
 }
 
 if (!function_exists('route')) {
+    /**
+     * 获取路由对应URL
+     *
+     * @param $name
+     * @param null $params
+     * @return string
+     */
     function route($name, $params = null)
     {
         return URLGenerator::route($name, $params);
@@ -41,6 +70,12 @@ if (!function_exists('route')) {
 }
 
 if (!function_exists('siteUrl')) {
+    /**
+     * 获取网站URL
+     *
+     * @param string $ext
+     * @return string
+     */
     function siteUrl($ext = '')
     {
         return URLGenerator::getFullUrl($ext);
@@ -48,6 +83,13 @@ if (!function_exists('siteUrl')) {
 }
 
 if (!function_exists('dateX')) {
+    /**
+     * 时间按格式显示
+     *
+     * @param int $format
+     * @param null $time
+     * @return false|string
+     */
     function dateX($format = 0, $time = null)
     {
         if (is_null($time)) $time = time();
@@ -67,14 +109,19 @@ if (!function_exists('dateX')) {
             }
         }
 
-        if (is_int($time))
-            return date($format, $time);
-        else
-            return date($format, strtotime($time));
+        return is_int($time) ? date($format, $time) : date($format, strtotime($time));
     }
 }
 
 if (!function_exists('auto_fill_time')) {
+    /**
+     * 自动填充created_at和updated_at的数组
+     * 数据库用
+     *
+     * @param string $created_at
+     * @param string $updated_at
+     * @return array
+     */
     function auto_fill_time($created_at = 'created_at', $updated_at = 'updated_at')
     {
         if (!is_null($created_at)) {
@@ -90,6 +137,12 @@ if (!function_exists('auto_fill_time')) {
 }
 
 if (!function_exists('friendly_datetime')) {
+    /**
+     * 友好时间显示
+     *
+     * @param $datetime
+     * @return string
+     */
     function friendly_datetime($datetime)
     {
         $time = strtotime($datetime);
@@ -108,6 +161,8 @@ if (!function_exists('friendly_datetime')) {
 
 if (!function_exists('format_size')) {
     /**
+     * 字节转友好大小显示
+     *
      * @param int $size
      * @param bool $return
      * @return string|void
@@ -136,6 +191,8 @@ if (!function_exists('format_size')) {
 
 if (!function_exists('redirect')) {
     /**
+     * 重定向
+     *
      * @param string $url
      * @param callable|null $with 跳转前执行
      */
@@ -151,6 +208,8 @@ if (!function_exists('redirect')) {
 
 if (!function_exists('back')) {
     /**
+     * 返回上一页
+     *
      * @param callable|null $with 跳转前执行
      */
     function back($with = null)
@@ -160,6 +219,11 @@ if (!function_exists('back')) {
 }
 
 if (!function_exists('to_homepage')) {
+    /**
+     * 跳转到首页
+     *
+     * @param string|null $with
+     */
     function to_homepage($with = null)
     {
         redirect(siteUrl(), $with);
@@ -216,6 +280,12 @@ if (!function_exists('with_input')) {
 }
 
 if (!function_exists('old')) {
+    /**
+     * 显示缓存到inputs的内容
+     *
+     * @param $key
+     * @param null $default
+     */
     function old($key, $default = null)
     {
         $inputs = app('session')->get('inputs', []);
@@ -225,6 +295,11 @@ if (!function_exists('old')) {
 }
 
 if (!function_exists('dump')) {
+    /**
+     * 调试用
+     *
+     * @param mixed ...$exp
+     */
     function dump(...$exp)
     {
         echo '<pre>';
@@ -234,6 +309,11 @@ if (!function_exists('dump')) {
 }
 
 if (!function_exists('dd')) {
+    /**
+     * 调试用
+     *
+     * @param mixed ...$exp
+     */
     function dd(...$exp)
     {
         dump(...$exp);
@@ -242,6 +322,11 @@ if (!function_exists('dd')) {
 }
 
 if (!function_exists('json')) {
+    /**
+     * 编码数组为json文本并显示
+     *
+     * @param $data
+     */
     function json($data)
     {
         echo json_encode($data);
@@ -266,6 +351,11 @@ if (!function_exists('generate_unique_slug')) {
 }
 
 if (!function_exists('get_ip')) {
+    /**
+     * 获取客户端IP
+     *
+     * @return mixed|string
+     */
     function get_ip()
     {
         //strcasecmp 比较两个字符，不区分大小写。返回0，>0，<0。

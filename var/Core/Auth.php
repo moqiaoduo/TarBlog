@@ -137,6 +137,13 @@ class Auth
         ];
     }
 
+    /**
+     * 检测是否有权限
+     *
+     * @param string $page 相关页面
+     * @param bool $autoRedirect
+     * @return bool
+     */
     public function check($page, $autoRedirect = true)
     {
         if (!self::hasLogin()) {
@@ -181,14 +188,26 @@ class Auth
         return true;
     }
 
+    /**
+     * 注册方法
+     *
+     * @param $username
+     * @param $password
+     * @param $email
+     * @param array $extra
+     * @return bool
+     */
     public function register($username, $password, $email, $extra = [])
     {
         $password = password_hash($password, PASSWORD_DEFAULT);
 
-        return DB::table('users')->insert(compact('username', 'password', 'email') + $extra +
-            auto_fill_time());
+        return DB::table('users')->insert(compact('username', 'password', 'email')
+            + $extra + auto_fill_time());
     }
 
+    /**
+     * 登出方法
+     */
     public function logout()
     {
         Cookie::delete('tarblog_user');
