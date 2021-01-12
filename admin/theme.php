@@ -75,7 +75,7 @@ Common::loadErrorAlert($errors->first());
                         <p>
                             <a href="theme-editor.php?theme=<?php echo $theme ?>">编辑</a>
                             <a href="do.php?a=Admin/Theme/Change&theme=<?php echo $theme ?>">启用</a>
-                            <a href="?a=Admin/Theme/Delete&theme=<?php echo $theme ?>"
+                            <a href="do.php?a=Admin/Theme/Delete&theme=<?php echo $theme ?>"
                                onclick="return confirm('是否确定删除主题<?php echo $name ?>？')">删除</a>
                         </p>
                     <?php endif; ?>
