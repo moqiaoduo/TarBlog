@@ -169,7 +169,6 @@ if (!Auth::hasLogin()) redirect(__ADMIN_DIR__ . 'login.php');
                     </ul>
                 </div>
             </li>
-            <li class="nav-item"><a href="./upgrade.php">升级程序</a></li>
         <?php endif ?>
         </ul>
     </div>
