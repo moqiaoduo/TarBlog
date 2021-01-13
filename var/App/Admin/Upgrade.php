@@ -27,6 +27,8 @@ class Upgrade extends NoRender
 
         $core_version = UpgradeList::$newest_version;
 
+        $this->options->set('upgrading', 1, 0, true); // 开启升级标识
+
         // 由于某些原因可能无法验证登录，因此我们允许直接更新
         $this->upgrade($db_version, $core_version);
 
