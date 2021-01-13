@@ -11,26 +11,30 @@ use App\NoRender;
 
 use Core\Upgrade as UpgradeList;
 use ReflectionMethod;
+use Utils\Auth;
 
 class Upgrade extends NoRender
 {
     public function execute(): bool
     {
+        if ($this->options->get('upgrading')) return false; // 升级中不允许访问
+
+        ignore_user_abort(); // 用户关闭浏览器也不会中断
+        ini_set('memory_limit','1024M');    // 临时设置最大内存占用为1G
+        set_time_limit(0);   // 设置脚本最大执行时间 为0 永不过期
+
         $db_version = $this->options->get('version', 'v0.2.2'); // 因为之前没有这个option，所以默认为v0.2.2
 
         $core_version = UpgradeList::$newest_version;
 
-        if ($this->request->has('download')) {
-            // TODO 下载并更新，这个必须由管理员操作
-            back(with_error('暂不支持在线更新'));
-        } elseif ($db_version < $core_version) {
-            // 由于某些原因可能无法验证登录，因此我们允许直接更新
-            $this->upgrade($db_version, $core_version);
-        }
+        // 由于某些原因可能无法验证登录，因此我们允许直接更新
+        $this->upgrade($db_version, $core_version);
 
         $this->request->session()->flash('success', '升级完成');
 
-        back();
+        $this->options->set('upgrading', 0); // 关闭升级标识
+
+        redirect(siteUrl()); // 回到主页
 
         return true;
     }

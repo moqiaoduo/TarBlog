@@ -7,9 +7,6 @@
  * @var \Core\Options $options
  */
 
-use Helper\Common;
-use Utils\Auth;
-
 require 'init.php';
 
 $db_version = $options->get('version', 'v0.2.2'); // 因为之前没有这个option，所以默认为v0.2.2
@@ -165,34 +162,4 @@ if ($db_version < $core_version) {
     die();
 }
 
-Auth::check('admin-level');
-
-Common::setTitle('升级程序');
-
-$data = json_decode(\Utils\Curl::get('https://api.github.com/repos/moqiaoduo/TarBlog/releases/latest'), true);
-
-if (empty($data) || !empty($data['message']))
-    $newest_version = 'Unknown';
-else
-    $newest_version = $data['tag_name'];
-
-include "header.php";
-?>
-    <div class="alert alert-info">
-        该功能处于测试阶段，生产环境下请谨慎执行。
-    </div>
-<h3>目前的程序版本：<?php echo __VERSION__ ?>，Release最新版本：<?php echo $newest_version ?></h3>
-
-<?php if (__VERSION__ < $newest_version): ?>
-    <p>检测到程序版本有更新</p>
-    <p>更新说明：</p>
-    <ol>
-        <li>更新之前最好做一下备份（包括网站文件和数据库），出了问题可以很快回退。</li>
-        <li>严格按照以下指示进行操作，否则可能会导致数据丢失或程序损坏。</li>
-    </ol>
-    <form method="post" action="do.php?a=Admin/Upgrade&download=yes">
-        <button type="submit" class="btn btn-primary"
-                onclick="return confirm('请确认您已经仔细阅读更新说明，若不按说明操作造成数据丢失，作者概不负责')">执行更新</button>
-    </form>
-<?php endif ?>
-<?php include "footer.php";
+echo "无升级任务";
