@@ -16,7 +16,6 @@ use Core\Database\Manager as Database;
  * $options[0]['siteName']，
  * $options[1]['addon_setting']
  * 其实是两种不同获取数据的方式
- * 当然，实际都是通过get方法来取的
  */
 class Options implements \ArrayAccess
 {
