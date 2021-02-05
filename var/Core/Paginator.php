@@ -257,7 +257,11 @@ class Paginator implements \Iterator
                 </li>
             </ul>
         <?php else:
-            include __ROOT_DIR__ . '/' . $custom_tpl;
+            // 绝对路径 相对ROOT路径 相对主题路径都支持
+            if (file_exists($custom_tpl)) include $custom_tpl;
+            elseif (file_exists($tpl = __ROOT_DIR__ . DIRECTORY_SEPARATOR . $custom_tpl)) include $tpl;
+            elseif (file_exists($tpl = __ROOT_DIR__ . __THEME_DIR__ . DIRECTORY_SEPARATOR .
+                app('options')->get('theme', 'default') . DIRECTORY_SEPARATOR . $custom_tpl)) include $tpl;
         endif;
     }
 
