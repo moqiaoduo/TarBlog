@@ -141,11 +141,6 @@ Common::loadErrorAlert($errors->first());
                                     <a href="?edit=<?php echo $val['mid'] ?>"><?php echo $val['name'] ?></a>
                                 </td>
                                 <td><?php echo $val['description'] ?></td>
-                                <td>
-                                    <?php if ($default == $val['mid']):echo "默认"; else: ?>
-                                        <a href="?a=default&default=<?php echo $val['mid'] ?>">设为默认</a>
-                                    <?php endif ?>
-                                </td>
                                 <td><?php echo $val['slug'] ?></td>
                                 <td>
                                     <a href="post.php?tag_id=<?php echo $val['id'] ?>">
