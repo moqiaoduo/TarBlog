@@ -34,7 +34,7 @@ class Sync
         $add_ids = array_diff($list, $ids);
 
         if (!empty($delete_ids))
-            DB::table('relationships')->whereIn('mid', $delete_ids)->delete();
+            DB::table('relationships')->whereIn('mid', $delete_ids)->where('cid', $cid)->delete();
 
         foreach ($add_ids as $mid)
             DB::table('relationships')->insert(['cid' => $cid, 'mid' => $mid]);
