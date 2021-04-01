@@ -2,3 +2,4 @@
 /.vscode
 /config.inc.php
 /.htaccess
+/nginx.htaccess
