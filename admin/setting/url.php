@@ -46,7 +46,7 @@ $default_post_choice = [
             启用该功能可以让你的链接看上去完全是静态地址.<br>
             启用该功能时，会在程序根目录下自动生成.htaccess（for Apache）<br>
             如果您的Web服务器不支持.htaccess规则，请手动建立重写规则<br>
-            <a href="javascript:alert('暂无');">点击这里查看各个Web服务器适用的重写规则</a>
+            <a href="https://tarblog.cn/archives/15" target="_blank">点击这里查看各个Web服务器适用的重写规则</a>
         </div>
     </div>
     <div class="form-group">
