@@ -119,7 +119,7 @@ Common::loadErrorAlert($errors->first());
                     <th>分类</th>
                     <th>标签</th>
                     <th width="50">评论</th>
-                    <th width="110">日期</th>
+                    <th width="80">日期</th>
                 </tr>
                 </thead>
                 <tbody>
