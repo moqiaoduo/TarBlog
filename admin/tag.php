@@ -143,7 +143,7 @@ Common::loadErrorAlert($errors->first());
                                 <td><?php echo $val['description'] ?></td>
                                 <td><?php echo $val['slug'] ?></td>
                                 <td>
-                                    <a href="post.php?tag_id=<?php echo $val['id'] ?>">
+                                    <a href="post.php?tag_id=<?php echo $val['mid'] ?>">
                                         <?php echo $val['count'] ?>
                                     </a>
                                 </td>
