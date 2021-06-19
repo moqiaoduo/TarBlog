@@ -34,7 +34,7 @@ if (!Auth::hasLogin()) redirect(__ADMIN_DIR__ . 'login.php');
         <ul class="nav right-nav">
             <li class="nav-item">
                 <a href="javascript:;">
-                    <img src="https://secure.gravatar.com/avatar/<?php echo md5(Auth::user()->email) ?>?s=30"
+                    <img src="https://cdn.v2ex.com/gravatar/<?php echo md5(Auth::user()->email) ?>?s=30"
                          class="avatar">
                     <?php echo Auth::user()->name ?: Auth::user()->username ?>
                 </a>

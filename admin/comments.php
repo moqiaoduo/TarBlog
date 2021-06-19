@@ -149,7 +149,7 @@ Common::loadErrorAlert($errors->first());
                     <td>
                         <div class="comment-avatar">
                             <img class="avatar"
-                                 src="https://secure.gravatar.com/avatar/<?php echo md5($val['email']) ?>?s=40"
+                                 src="https://cdn.v2ex.com/gravatar/<?php echo md5($val['email']) ?>?s=40"
                                  alt="<?php echo md5($val['name']) ?>" width="40" height="40">
                         </div>
                         <div class="comment-author">

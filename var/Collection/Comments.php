@@ -347,7 +347,7 @@ class Comments extends DataContainer
             if (!$plugged) {
                 $md5 = md5($email);
 
-                $url = "https://secure.gravatar.com/avatar/$md5?s=$size&r=$rating&d=$default";
+                $url = "https://cdn.v2ex.com/gravatar/$md5?s=$size&r=$rating&d=$default";
 
                 echo '<img class="avatar" src="' . $url . '" alt="' .
                     $name . '" width="' . $size . '" height="' . $size . '" />';
