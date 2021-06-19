@@ -38,6 +38,7 @@ $pending_comments_num = DB::table('comments')->where('ownerId', Auth::id())
     ->where('status', 'pending')->count();
 
 $official_logs = json_decode(\Utils\Curl::get('https://tarblog.cn/logs'), true);
+if (count($official_logs) > 0 && !isset($official_logs[0])) $official_logs = []; // 防止获取到奇怪的内容
 ?>
 <style>
     @media screen and (max-width: 768px) {
@@ -184,10 +185,10 @@ $official_logs = json_decode(\Utils\Curl::get('https://tarblog.cn/logs'), true);
             <?php if (is_array($official_logs) && count($official_logs) > 0):
                 foreach ($official_logs as $log): ?>
                     <li>
-                        <span><?php echo dateX('d/M', $log['date']) ?></span>
+                        <span><?php echo dateX('d/M', $log['date'] ?? null) ?></span>
                         <div>
-                            <a target="_blank" href="<?php echo $log['url'] ?>">
-                                <?php echo $log['title'] ?>
+                            <a target="_blank" href="<?php echo $log['url'] ?? null ?>">
+                                <?php echo $log['title'] ?? null ?>
                             </a>
                         </div>
                     </li>
