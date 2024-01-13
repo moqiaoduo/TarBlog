@@ -73,7 +73,7 @@ abstract class SQLBuildAdapter
             switch ($where['type']) {
                 case 'raw':
                     $raw = $where['sql'];
-                    $parsedParameters = array_merge($parsedParameters, Arr::wrap($where['binds']));
+                    $parsedParameters = array_merge($parsedParameters, Arr::wrap($where['binds'] ?? null));
                     break;
                 case 'normal':
                     $raw = $quote . $where['column'] . $quote . ' ' . $where['operator'] . ' ?';
