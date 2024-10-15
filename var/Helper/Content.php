@@ -40,6 +40,8 @@ class Content
     {
         $search = ($params['search'] ?? null);
 
+        if (!isset($params['status'])) $params['status'] = '';
+
         if ($params['status'] == 'trash') {
             $content = DB::table('contents')->whereNotNull('deleted_at');
         } elseif ($params['status'] == 'draft') {
