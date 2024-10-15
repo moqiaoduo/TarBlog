@@ -118,6 +118,8 @@ class Save extends NoRender
 
         if (empty($p['category'])) $p['category'][] = $options->get('defaultCategory', 1);
 
+        if (!isset($p['tag'])) $p['tag'] = [];
+
         Sync::meta($post->cid, array_merge($p['category'], Content::getTagsId($post->cid, $p['tag'])));
 
         redirect('write-post.php?edit=' . $post->cid, function () {
