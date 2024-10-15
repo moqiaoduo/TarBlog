@@ -37,8 +37,7 @@ $comments_num = DB::table('comments')->where('status', 'approved')->where(functi
 $pending_comments_num = DB::table('comments')->where('ownerId', Auth::id())
     ->where('status', 'pending')->count();
 
-$official_logs = json_decode(\Utils\Curl::get('https://tarblog.cn/logs'), true);
-if (count($official_logs) > 0 && !isset($official_logs[0])) $official_logs = []; // 防止获取到奇怪的内容
+$official_logs = []; // 官网已寄，停用
 ?>
 <style>
     @media screen and (max-width: 768px) {
