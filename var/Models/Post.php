@@ -62,14 +62,14 @@ class Post extends Content
 
     public function getCategories($params = [])
     {
-        if ($params['model']) $params['model'] = Category::class;
+        if (isset($params['model']) && $params['model'] === true) $params['model'] = Category::class;
 
         return $this->getMeta('category', $params);
     }
 
     public function getTags($params = [])
     {
-        if ($params['model']) $params['model'] = Tag::class;
+        if (isset($params['model']) && $params['model'] === true) $params['model'] = Tag::class;
 
         return $this->getMeta('tag', $params);
     }
