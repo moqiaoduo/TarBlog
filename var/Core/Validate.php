@@ -43,7 +43,7 @@ class Validate
                 $tr = $r[0];
                 $params = explode(',',$r[1] ?? '');
                 if (($message = $this->validate($field, $name, $tr, $params,
-                        $this->data[$field], $messages[$field])) !== true) {
+                        $this->data[$field], $messages[$field] ?? "")) !== true) {
                     return [false, $field, $message];
                 }
             }
