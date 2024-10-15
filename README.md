@@ -7,6 +7,6 @@
 
 轻量级博客程序，兼有强大的在线编辑和管理功能。基于PHP7.1语法开发，简洁且高效，拒绝臃肿繁琐。
 
-[点击进入官网](https://tarblog.cn)
+官网已停用，该项目将无期限停止维护（除安全漏洞外）
 
 [点击查看开发文档](https://www.kancloud.cn/moqiaoduo/tarblog-documentation)
