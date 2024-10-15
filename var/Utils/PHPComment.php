@@ -29,6 +29,8 @@ class PHPComment
 
         foreach ($items[1] ?? [] as $val) {
             preg_match_all('/(.*?)\s(.*)/', $val, $rs);
+            if (!isset($rs[1][0]) || !isset($rs[2][0]))
+                continue;
 
             $info[trim($rs[1][0])] = trim($rs[2][0]);
         }
