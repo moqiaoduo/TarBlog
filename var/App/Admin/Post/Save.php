@@ -95,6 +95,7 @@ class Save extends NoRender
         } else {
             //新增
             $post = new Post(['type' => $p['type']] + $base_data);
+            $cid = 0;
         }
 
         // 权限不足的清空下，这些设置都是不可见的，也就是说都按默认来，或者更高权限的人设置的值
