@@ -44,8 +44,8 @@ class Comment extends NoRender
         $mail = $request->post('mail');
         $url = $request->post('url');
         $text = HTMLPurifier::clean($request->post('text'));
-        $slug = $this->routeParams['slug'];
-        $cid = $this->routeParams['cid'];
+        $slug = $this->routeParams['slug'] ?? "";
+        $cid = $this->routeParams['cid'] ?? 0;
 
         Cookie::set('_tarblog_remember_author', $author, time() + 31536000); // 一年
         Cookie::set('_tarblog_remember_mail', $mail, time() + 31536000);
